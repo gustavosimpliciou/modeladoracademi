@@ -6,6 +6,49 @@
 [build.environment]
   NODE_VERSION = "22"
 
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/healthz"
+  to = "/.netlify/functions/healthz"
+  status = 200
+
+[[redirects]]
+  from = "/api/dashboard"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/activity-feed"
+  to = "/.netlify/functions/activity-feed"
+  status = 200
+
+[[redirects]]
+  from = "/api/courses"
+  to = "/.netlify/functions/courses"
+  status = 200
+
+[[redirects]]
+  from = "/api/courses/:courseId"
+  to = "/.netlify/functions/courses-[courseId]"
+  status = 200
+
+[[redirects]]
+  from = "/api/courses/:courseId/lessons/:lessonId"
+  to = "/.netlify/functions/courses-[courseId]-lessons-[lessonId]"
+  status = 200
+
+[[redirects]]
+  from = "/api/progress/:lessonId"
+  to = "/.netlify/functions/progress-[lessonId]"
+  status = 200
+
+[[redirects]]
+  from = "/api/activities"
+  to = "/.netlify/functions/activities"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
