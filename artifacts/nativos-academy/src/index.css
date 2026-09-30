@@ -105,16 +105,16 @@
   * { @apply border-border; }
   html { 
     background: hsl(var(--background)); 
-    font-size: 60%;
+    font-size: 36%;
   }
   @media (min-width: 640px) {
-    html { font-size: 70%; }
+    html { font-size: 42%; }
   }
   @media (min-width: 1024px) {
-    html { font-size: 80%; }
+    html { font-size: 48%; }
   }
   @media (min-width: 1280px) {
-    html { font-size: 90%; }
+    html { font-size: 54%; }
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
