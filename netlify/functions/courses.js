@@ -1,3 +1,5 @@
+import { json, handleOptions, getQuery } from "./_utils.js";
+
 const mockCourses = [
   {
     id: "curso-01",
@@ -49,8 +51,11 @@ const mockCourses = [
   }
 ];
 
-export default async (req, res) => {
-  const { search, status } = req.query;
+export default async (event) => {
+  if (event.httpMethod === "OPTIONS") return handleOptions();
+  
+  const search = getQuery(event, "search");
+  const status = getQuery(event, "status");
   
   let courses = [...mockCourses];
   
@@ -64,7 +69,7 @@ export default async (req, res) => {
     courses = courses.filter(course => course.status === status);
   }
   
-  res.status(200).json(courses.map(c => ({
+  return json(courses.map(c => ({
     id: c.id,
     slug: c.slug,
     title: c.title,

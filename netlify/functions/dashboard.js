@@ -1,3 +1,5 @@
+import { json, handleOptions } from "./_utils.js";
+
 const mockCourses = [
   {
     id: "curso-01",
@@ -49,7 +51,9 @@ const mockCourses = [
   }
 ];
 
-export default async (req, res) => {
+export default async (event) => {
+  if (event.httpMethod === "OPTIONS") return handleOptions();
+  
   const featured = mockCourses[0];
   
   const dashboard = {
@@ -99,5 +103,5 @@ export default async (req, res) => {
     }))
   };
 
-  res.status(200).json(dashboard);
+  return json(dashboard);
 };

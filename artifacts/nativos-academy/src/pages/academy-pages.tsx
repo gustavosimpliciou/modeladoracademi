@@ -59,33 +59,33 @@ import {
 } from '@/components/academy-ui';
 
 function PublicTopbar() {
-  return <header className="absolute inset-x-0 top-0 z-20 flex h-[78px] items-center justify-between px-5 sm:px-10 lg:px-16"><Mark /><nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex"><a href="#metodo" className="transition hover:text-foreground" data-testid="link-landing-method">O método</a><a href="#trilhas" className="transition hover:text-foreground" data-testid="link-landing-tracks">Trilhas</a><a href="#manifesto" className="transition hover:text-foreground" data-testid="link-landing-manifesto">Manifesto</a></nav><div className="flex items-center gap-2"><Link href="/sign-in" className="rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground" data-testid="link-landing-sign-in">Entrar</Link><CTAButton href="/sign-up">Começar agora</CTAButton></div></header>;
+  return <header className="absolute inset-x-0 top-0 z-20 flex h-[84px] items-center justify-between px-5 sm:px-10 lg:px-16"><Mark /><nav className="hidden items-center gap-10 text-base text-muted-foreground md:flex"><a href="#metodo" className="transition hover:text-foreground" data-testid="link-landing-method">O método</a><a href="#trilhas" className="transition hover:text-foreground" data-testid="link-landing-tracks">Trilhas</a><a href="#manifesto" className="transition hover:text-foreground" data-testid="link-landing-manifesto">Manifesto</a></nav><div className="flex items-center gap-3"><Link href="/sign-in" className="rounded-lg px-4 py-2.5 text-base text-muted-foreground hover:text-foreground" data-testid="link-landing-sign-in">Entrar</Link><CTAButton href="/sign-up" className="text-base px-5 py-2.5">Começar agora</CTAButton></div></header>;
 }
 
 export function LandingPage() {
   return <div className="noise min-h-[100dvh] overflow-hidden bg-background">
     <PublicTopbar />
-    <section className="relative grid min-h-[680px] items-center px-5 pb-24 pt-32 sm:px-10 lg:min-h-[780px] lg:px-16">
+    <section className="relative grid min-h-[720px] items-start px-5 pb-24 pt-28 sm:px-10 lg:min-h-[820px] lg:px-16">
       <div className="pointer-events-none absolute right-[-15%] top-[-15%] h-[650px] w-[650px] rounded-full bg-primary/10 blur-[120px]" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 opacity-30 [background:linear-gradient(120deg,transparent_30%,hsl(var(--primary)/.18)_30.1%,transparent_30.7%,transparent_70%,hsl(var(--accent)/.12)_70.1%,transparent_70.7%)]" />
-      <div className="relative mx-auto grid w-full max-w-[1280px] items-center gap-12 lg:grid-cols-[1.08fr_.92fr]">
-        <div className="animate-rise">
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 font-mono-ui text-[10px] uppercase tracking-[.18em] text-primary"><span className="h-1.5 w-1.5 rounded-full bg-primary" /> Aprender fazendo</div>
-          <h1 className="max-w-4xl font-display text-[clamp(4.3rem,10vw,8.5rem)] font-semibold leading-[.82] tracking-[-.045em] text-foreground">Conhecimento<br /><span className="text-primary">em movimento.</span></h1>
-          <p className="mt-8 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">A academia para quem quer transformar curiosidade em repertório, habilidade e trabalho bem feito. Aulas diretas, projetos reais e uma comunidade que acompanha seu ritmo.</p>
-          <div className="mt-9 flex flex-wrap items-center gap-3"><CTAButton href="/sign-up">Explorar a academia</CTAButton><Link href="/cursos" className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-foreground transition hover:border-primary/50" data-testid="link-landing-courses">Ver cursos <ArrowRight size={15} /></Link></div>
-          <div className="mt-12 flex items-center gap-6 border-t border-border pt-5 text-xs text-muted-foreground"><span><strong className="font-mono-ui text-foreground">12k+</strong> alunos ativos</span><span className="h-4 w-px bg-border" /><span><strong className="font-mono-ui text-foreground">94%</strong> recomendam</span></div>
+      <div className="relative mx-auto grid w-full max-w-[1280px] items-start gap-10 lg:grid-cols-[1.1fr_.9fr]">
+        <div className="animate-rise pt-6">
+          <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-primary/25 bg-primary/10 px-4 py-2 font-mono-ui text-[12px] uppercase tracking-[.18em] text-primary"><span className="h-2 w-2 rounded-full bg-primary" /> Aprender fazendo</div>
+          <h1 className="max-w-4xl font-display text-[clamp(5.375rem,12.5vw,10.625rem)] font-semibold leading-[.82] tracking-[-.045em] text-foreground">Conhecimento<br /><span className="text-primary">em movimento.</span></h1>
+          <p className="mt-10 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">A academia para quem quer transformar curiosidade em repertório, habilidade e trabalho bem feito. Aulas diretas, projetos reais e uma comunidade que acompanha seu ritmo.</p>
+          <div className="mt-11 flex flex-wrap items-center gap-4"><CTAButton href="/sign-up" className="text-base px-6 py-3">Explorar a academia</CTAButton><Link href="/cursos" className="inline-flex items-center gap-2.5 rounded-lg border border-border px-5 py-3 text-base font-semibold text-foreground transition hover:border-primary/50" data-testid="link-landing-courses">Ver cursos <ArrowRight size={17} /></Link></div>
+          <div className="mt-14 flex items-center gap-8 border-t border-border pt-6 text-sm text-muted-foreground"><span><strong className="font-mono-ui text-foreground">12k+</strong> alunos ativos</span><span className="h-5 w-px bg-border" /><span><strong className="font-mono-ui text-foreground">94%</strong> recomendam</span></div>
         </div>
-        <div className="relative animate-rise animate-rise-delay-2 lg:pl-8">
+        <div className="relative animate-rise animate-rise-delay-2 lg:pl-6 -mt-16">
           <div className="absolute -right-4 -top-8 font-mono-ui text-[10px] uppercase tracking-[.22em] text-primary">NATIVOS / 01</div>
           <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-card">
-            <div className="relative min-h-[400px] overflow-hidden rounded-xl bg-[#171717] p-6 sm:min-h-[500px]">
+            <div className="relative min-h-[440px] overflow-hidden rounded-xl bg-[#171717] p-7 sm:min-h-[540px]">
               <div className="absolute inset-0 grid-lines opacity-40" />
               <div className="absolute -right-24 top-20 h-80 w-80 rounded-full border-[44px] border-primary/20" />
               <div className="absolute -bottom-16 -left-16 h-72 w-72 rounded-full border border-accent/35" />
-              <div className="relative flex items-start justify-between"><span className="font-mono-ui text-[10px] uppercase tracking-[.2em] text-muted-foreground">Aula em destaque</span><span className="rounded-full bg-primary px-2.5 py-1 font-mono-ui text-[9px] text-primary-foreground">03 / 12</span></div>
-              <div className="relative mt-24 max-w-xs"><p className="font-mono-ui text-[10px] uppercase tracking-[.18em] text-primary">Design de produto</p><h2 className="mt-3 font-display text-6xl font-semibold leading-[.86] text-foreground sm:text-7xl">Pense<br />mais<br /><span className="text-primary">claro.</span></h2></div>
-              <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between"><div><p className="text-sm font-semibold">Fundamentos do processo</p><p className="mt-1 text-xs text-muted-foreground">Aula de 18 min · em andamento</p></div><span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground"><Play size={17} fill="currentColor" /></span></div>
+              <div className="relative flex items-start justify-between"><span className="font-mono-ui text-[12px] uppercase tracking-[.2em] text-muted-foreground">Aula em destaque</span><span className="rounded-full bg-primary px-3 py-1.5 font-mono-ui text-[10px] text-primary-foreground">03 / 12</span></div>
+              <div className="relative mt-28 max-w-xs"><p className="font-mono-ui text-[12px] uppercase tracking-[.18em] text-primary">Design de produto</p><h2 className="mt-4 font-display text-[clamp(4.5rem,8vw,7.5rem)] font-semibold leading-[.86] text-foreground sm:text-[clamp(5rem,9vw,8.5rem)]">Pense<br />mais<br /><span className="text-primary">claro.</span></h2></div>
+              <div className="absolute bottom-7 left-7 right-7 flex items-end justify-between"><div><p className="text-base font-semibold">Fundamentos do processo</p><p className="mt-1.5 text-sm text-muted-foreground">Aula de 18 min · em andamento</p></div><span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground"><Play size={19} fill="currentColor" /></span></div>
             </div>
           </div>
           <div className="absolute -bottom-7 -left-6 hidden rounded-xl border border-border bg-secondary p-4 shadow-card sm:block"><div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-400/15 text-emerald-300"><Check size={16} /></span><div><p className="font-mono-ui text-sm font-bold">7h 24min</p><p className="text-[10px] text-muted-foreground">aprendizado este mês</p></div></div></div>
@@ -108,9 +108,19 @@ function TrackCard({ index, title, detail, color }: { index: string; title: stri
 }
 
 export function DashboardPage() {
-  const dashboard = useGetDashboard({ query: { queryKey: getGetDashboardQueryKey() } });
-  const activity = useGetActivityFeed({ query: { queryKey: getGetActivityFeedQueryKey() } });
-  const health = useHealthCheck({ query: { queryKey: getHealthCheckQueryKey(), staleTime: 120000 } });
+  const dashboard = useGetDashboard({ 
+    query: { 
+      queryKey: getGetDashboardQueryKey(),
+      staleTime: 1000 * 60 * 5, // 5 min
+    } 
+  });
+  const activity = useGetActivityFeed({ 
+    query: { 
+      queryKey: getGetActivityFeedQueryKey(),
+      staleTime: 1000 * 60 * 3, // 3 min
+    } 
+  });
+  const health = useHealthCheck({ query: { queryKey: getHealthCheckQueryKey(), staleTime: 1000 * 60 * 10 } });
   const data = dashboard.data;
   const events = activity.data ?? [];
   const featured = data?.featuredCourse;
@@ -139,7 +149,12 @@ function ActivityList({ events }: { events: ActivityEvent[] }) {
 export function CoursesPage() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'all' | 'in_progress' | 'completed' | 'not_started'>('all');
-  const query = useListCourses({ search: search || undefined, status }, { query: { queryKey: getListCoursesQueryKey({ search: search || undefined, status }) } });
+  const query = useListCourses({ search: search || undefined, status }, { 
+    query: { 
+      queryKey: getListCoursesQueryKey({ search: search || undefined, status }),
+      staleTime: 1000 * 60 * 5,
+    } 
+  });
   const courses = query.data ?? [];
   return <AppShell><div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-8 lg:px-10 lg:py-10"><div className="animate-rise"><SectionTitle eyebrow="Biblioteca" title="Cursos para avançar" detail="Conteúdo curado para construir repertório e colocar a mão na massa." /><div className="mb-8 flex flex-col gap-3 sm:flex-row"><label className="flex flex-1 items-center gap-3 rounded-lg border border-border bg-card px-3.5 py-3 focus-within:border-primary/60"><Search size={17} className="text-muted-foreground" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar por curso, categoria ou habilidade..." className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground" data-testid="input-course-search" />{search && <button onClick={() => setSearch('')} className="text-muted-foreground hover:text-foreground" aria-label="Limpar busca" data-testid="button-clear-search"><X size={16} /></button>}</label><label className="flex items-center gap-2 rounded-lg border border-border bg-card px-3.5 py-3 text-sm text-muted-foreground"><Filter size={16} /><select value={status} onChange={(event) => setStatus(event.target.value as typeof status)} className="bg-transparent text-foreground outline-none" data-testid="select-course-status"><option value="all">Todos os cursos</option><option value="in_progress">Em andamento</option><option value="completed">Concluídos</option><option value="not_started">Não iniciados</option></select></label></div><QueryState loading={query.isLoading} error={query.error} onRetry={() => void query.refetch()} empty={!courses.length} emptyTitle="A biblioteca está em preparação."><>{courses.length && search ? <p className="mb-4 font-mono-ui text-[10px] uppercase tracking-[.15em] text-muted-foreground">{courses.length} resultado(s) para “{search}”</p> : null}<div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{courses.map((course) => <CatalogCard key={course.id} course={course} />)}</div></></QueryState></div></div></AppShell>;
 }
@@ -150,7 +165,7 @@ function CatalogCard({ course }: { course: Course }) {
 
 export function CourseDetailPage() {
   const { slug = '' } = useParams<{ slug: string }>();
-  const query = useGetCourse(slug, { query: { enabled: !!slug, queryKey: getGetCourseQueryKey(slug) } });
+  const query = useGetCourse(slug, { query: { enabled: !!slug, queryKey: getGetCourseQueryKey(slug), staleTime: 1000 * 60 * 5 } });
   const course = query.data as CourseDetail | undefined;
   if (!slug) return <Redirect to="/cursos" />;
   return <AppShell><div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-8 lg:px-10 lg:py-10"><QueryState loading={query.isLoading} error={query.error} onRetry={() => void query.refetch()}><div className="animate-rise"><Link href="/cursos" className="mb-8 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground" data-testid="link-back-courses"><ArrowLeft size={14} /> Voltar para cursos</Link><div className="grid gap-5 lg:grid-cols-[1.3fr_.7fr]"><div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 sm:p-12"><div className="absolute right-0 top-0 h-full w-1/2 bg-[radial-gradient(circle_at_70%_28%,hsl(var(--primary)/.24),transparent_42%)]" /><div className="relative"><span className="font-mono-ui text-[10px] uppercase tracking-[.2em] text-primary">{course?.category} / {course?.level}</span><h1 className="mt-5 max-w-2xl font-display text-5xl leading-[.88] sm:text-7xl">{course?.title}</h1><p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">{course?.description}</p><div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-xs text-muted-foreground"><span className="flex items-center gap-2"><Clock3 size={15} className="text-primary" /> {course?.duration}</span><span className="flex items-center gap-2"><Layers3 size={15} className="text-primary" /> {course?.modules} módulos</span><span className="flex items-center gap-2"><Play size={15} className="text-primary" /> {course?.lessons} aulas</span></div><CTAButton href={`/curso/${course?.id}`} className="mt-10">{course?.progress ? 'Continuar curso' : 'Começar curso'}</CTAButton></div></div><div className="overflow-hidden rounded-2xl border border-border bg-card"><CourseArtwork course={course ?? { title: '', category: '' }} large /><div className="p-6"><p className="font-mono-ui text-[9px] uppercase tracking-[.18em] text-muted-foreground">Sobre a trilha</p><div className="mt-5 flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 font-mono-ui text-xs text-primary">NA</span><div><p className="text-sm font-semibold">{course?.instructor}</p><p className="text-xs text-muted-foreground">{course?.instructorRole}</p></div></div><div className="mt-7 border-t border-border pt-5"><p className="text-xs font-semibold">Seu progresso</p><div className="mt-3 flex items-center gap-3"><ProgressBar value={course?.progress ?? 0} className="flex-1" accent /><span className="font-mono-ui text-xs text-primary">{course?.progress ?? 0}%</span></div></div></div></div></div><div className="mt-6 grid gap-5 lg:grid-cols-[.95fr_1.05fr]"><InfoList title="O que você vai aprender" items={course?.objectives ?? []} icon={<CheckCircle2 size={16} />} /><ModulesPreview modules={course?.modulesDetail ?? []} courseId={course?.id ?? slug} /></div></div></QueryState></div></AppShell>;
@@ -166,7 +181,7 @@ function ModulesPreview({ modules, courseId }: { modules: Module[]; courseId: st
 
 export function CourseWorkspacePage() {
   const { courseId = '' } = useParams<{ courseId: string }>();
-  const query = useGetCourse(courseId, { query: { enabled: !!courseId, queryKey: getGetCourseQueryKey(courseId) } });
+  const query = useGetCourse(courseId, { query: { enabled: !!courseId, queryKey: getGetCourseQueryKey(courseId), staleTime: 1000 * 60 * 5 } });
   const course = query.data as CourseDetail | undefined;
   return <AppShell><div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-8 lg:px-10 lg:py-10"><QueryState loading={query.isLoading} error={query.error} onRetry={() => void query.refetch()}><div className="animate-rise"><Link href={`/cursos/${course?.slug ?? courseId}`} className="mb-7 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground" data-testid="link-workspace-back"><ArrowLeft size={14} /> Sobre o curso</Link><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="font-mono-ui text-[10px] uppercase tracking-[.2em] text-primary">Área de estudo / {course?.category}</p><h1 className="mt-3 max-w-2xl font-display text-5xl leading-[.88] sm:text-6xl">{course?.title}</h1></div><div className="w-full max-w-xs sm:w-56"><div className="flex justify-between text-[10px] text-muted-foreground"><span>Progresso geral</span><span className="font-mono-ui text-primary">{course?.progress}%</span></div><ProgressBar value={course?.progress ?? 0} className="mt-2" accent /></div></div><div className="mt-10 grid gap-6 lg:grid-cols-[1fr_370px]"><div className="space-y-4">{(course?.modulesDetail ?? []).map((module) => <ModuleAccordion key={module.id} module={module} courseId={courseId} />)}</div><aside className="h-fit rounded-xl border border-border bg-card p-6 lg:sticky lg:top-24"><p className="font-mono-ui text-[10px] uppercase tracking-[.18em] text-primary">Seu próximo passo</p><h2 className="mt-4 font-display text-3xl">{course?.currentLesson ?? 'Comece pela primeira aula'}</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Mantenha o ritmo. Uma aula concluída hoje já muda a direção da semana.</p>{course?.modulesDetail?.[0]?.lessons?.[0] && <CTAButton href={`/curso/${courseId}/aula/${course.modulesDetail[0].lessons[0].id}`} className="mt-7 w-full justify-center">Ir para a aula</CTAButton>}<div className="mt-7 border-t border-border pt-5"><div className="flex items-center gap-3 text-xs text-muted-foreground"><Award size={17} className="text-primary" /><span>{course?.modules ?? 0} módulos para concluir</span></div><div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground"><Clock3 size={17} className="text-primary" /><span>{course?.duration} de conteúdo</span></div></div></aside></div></div></QueryState></div></AppShell>;
 }
@@ -183,8 +198,8 @@ function LessonRow({ lesson, courseId }: { lesson: Lesson; courseId: string }) {
 
 export function LessonPage() {
   const { courseId = '', lessonId = '' } = useParams<{ courseId: string; lessonId: string }>();
-  const query = useGetLesson(courseId, lessonId, { query: { enabled: !!courseId && !!lessonId, queryKey: getGetLessonQueryKey(courseId, lessonId) } });
-  const courseQuery = useGetCourse(courseId, { query: { enabled: !!courseId, queryKey: getGetCourseQueryKey(courseId) } });
+  const query = useGetLesson(courseId, lessonId, { query: { enabled: !!courseId && !!lessonId, queryKey: getGetLessonQueryKey(courseId, lessonId), staleTime: 1000 * 60 * 3 } });
+  const courseQuery = useGetCourse(courseId, { query: { enabled: !!courseId, queryKey: getGetCourseQueryKey(courseId), staleTime: 1000 * 60 * 5 } });
   const lesson = query.data as LessonDetail | undefined;
   const nextLesson = lesson?.nextLessonId;
   const [tab, setTab] = useState<'aula' | 'materiais' | 'anotacoes'>('aula');
@@ -208,7 +223,7 @@ function Materials({ lesson }: { lesson?: LessonDetail }) {
 function formatSeconds(seconds: number) { const mins = Math.floor(seconds / 60); const secs = Math.floor(seconds % 60).toString().padStart(2, '0'); return `${mins}:${secs}`; }
 
 export function ActivitiesPage() {
-  const query = useListActivities({ query: { queryKey: getListActivitiesQueryKey() } });
+  const query = useListActivities({ query: { queryKey: getListActivitiesQueryKey(), staleTime: 1000 * 60 * 5 } });
   const activities = query.data ?? [];
   return <AppShell><div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-8 lg:px-10 lg:py-10"><div className="animate-rise"><SectionTitle eyebrow="Seu ritmo" title="Atividades" detail="Um lugar para acompanhar entregas, desafios e próximos prazos." action={<button className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold hover:border-primary/50" data-testid="button-filter-activities"><Filter size={15} /> Filtrar</button>} /><QueryState loading={query.isLoading} error={query.error} onRetry={() => void query.refetch()} empty={!activities.length} emptyTitle="Nenhuma atividade por enquanto."><div className="space-y-3">{activities.map((activity, index) => <ActivityCard key={activity.id} activity={activity} index={index} />)}</div></QueryState></div></div></AppShell>;
 }

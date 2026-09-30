@@ -1,3 +1,5 @@
+import { json, handleOptions } from "./_utils.js";
+
 const mockActivities = [
   {
     id: "act-1",
@@ -37,6 +39,7 @@ const mockActivities = [
   }
 ];
 
-export default async (req, res) => {
-  res.status(200).json(mockActivities);
+export default async (event) => {
+  if (event.httpMethod === "OPTIONS") return handleOptions();
+  return json(mockActivities);
 };

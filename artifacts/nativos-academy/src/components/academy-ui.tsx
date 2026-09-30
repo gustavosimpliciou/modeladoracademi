@@ -5,10 +5,12 @@ import {
   Check,
   ChevronDown,
   Clock3,
+  Cog,
   FileText,
   Headphones,
   LayoutDashboard,
   LifeBuoy,
+  LogOut,
   Menu,
   Play,
   Search,
@@ -17,7 +19,8 @@ import {
   Trophy,
   X,
 } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useState, type ReactNode, useRef, useEffect } from 'react';
+import { useSignOut } from '@clerk/react';
 
 export function Mark({ compact = false }: { compact?: boolean }) {
   return (
@@ -46,6 +49,8 @@ export function AppShell({ children, userName = 'Gustavo Simplício', userInitia
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [sidebarMenuOpen, setSidebarMenuOpen] = useState(false);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
 
   return (
     <div className="noise min-h-[100dvh] bg-background text-foreground">
@@ -73,13 +78,16 @@ export function AppShell({ children, userName = 'Gustavo Simplício', userInitia
           <button className="flex items-center gap-3 rounded-lg px-3 py-3 text-left text-sm text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground" data-testid="button-support"><LifeBuoy size={17} /> Suporte</button>
         </nav>
         <div className="mt-auto border-t border-sidebar-border pt-4">
-          <div className="flex items-center gap-3 rounded-xl px-2 py-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-secondary font-mono-ui text-[11px] text-primary" data-testid="avatar-user">{userInitials}</span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-xs font-semibold text-foreground" data-testid="text-sidebar-user">{userName}</span>
-              <span className="mt-0.5 block text-[10px] text-muted-foreground">Aluno</span>
-            </span>
-            <ChevronDown size={14} className="text-muted-foreground" />
+          <div className="relative">
+            <button onClick={() => setSidebarMenuOpen(!sidebarMenuOpen)} className="flex w-full items-center gap-3 rounded-xl px-2 py-2" data-testid="button-sidebar-user-menu">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-secondary font-mono-ui text-[11px] text-primary" data-testid="avatar-user">{userInitials}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-xs font-semibold text-foreground" data-testid="text-sidebar-user">{userName}</span>
+                <span className="mt-0.5 block text-[10px] text-muted-foreground">Aluno</span>
+              </span>
+              <ChevronDown size={14} className={`text-muted-foreground transition-transform ${sidebarMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {sidebarMenuOpen && <UserMenu userName={userName} userInitials={userInitials} onClose={() => setSidebarMenuOpen(false)} />}
           </div>
           <div className="mt-3 flex items-center gap-2 px-2">
             <span className="font-display text-sm font-bold italic text-primary">N</span>
@@ -101,10 +109,13 @@ export function AppShell({ children, userName = 'Gustavo Simplício', userInitia
           <div className="flex items-center gap-2">
             <button className="relative rounded-lg p-2.5 text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Notificações" data-testid="button-notifications"><span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-primary" /><Sparkles size={17} /></button>
             <div className="hidden h-6 w-px bg-border sm:block" />
-            <Link href="/dashboard" className="flex items-center gap-2 rounded-lg py-1.5 pl-2 pr-1 hover:bg-secondary" data-testid="link-header-profile">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-primary/40 bg-secondary font-mono-ui text-[10px] text-primary">{userInitials}</span>
-              <ChevronDown size={14} className="text-muted-foreground" />
-            </Link>
+            <div className="relative">
+              <button onClick={() => setHeaderMenuOpen(!headerMenuOpen)} className="flex items-center gap-2 rounded-lg py-1.5 pl-2 pr-1 hover:bg-secondary" data-testid="button-header-user-menu">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-primary/40 bg-secondary font-mono-ui text-[10px] text-primary">{userInitials}</span>
+                <ChevronDown size={14} className={`text-muted-foreground transition-transform ${headerMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {headerMenuOpen && <UserMenu userName={userName} userInitials={userInitials} onClose={() => setHeaderMenuOpen(false)} />}
+            </div>
           </div>
         </header>
         {searchOpen && (
@@ -187,4 +198,41 @@ export function CTAButton({ href, children, secondary = false, onClick, classNam
   const className = `inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition hover:-translate-y-0.5 ${secondary ? 'border border-border bg-secondary text-foreground hover:border-primary/40' : 'bg-primary text-primary-foreground shadow-[0_8px_24px_hsl(var(--primary)/.18)] hover:brightness-110'} ${customClassName}`;
   if (href) return <Link href={href} onClick={onClick} className={className} data-testid={`link-cta-${href.replace(/\W/g, '-')}`}>{children}<ArrowRight size={15} /></Link>;
   return <button onClick={onClick} className={className} data-testid="button-cta">{children}<ArrowRight size={15} /></button>;
+}
+
+function UserMenu({ userName, userInitials, onClose }: { userName: string; userInitials: string; onClose: () => void }) {
+  const { signOut } = useSignOut();
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+  const handleSignOut = async () => {
+    onClose();
+    await signOut({ redirectUrl: '/sign-in' });
+  };
+
+  return (
+    <div className="fixed inset-0 z-40" onClick={onClose}>
+      <div ref={menuRef} className="absolute right-4 top-full mt-2 w-56 origin-top-right rounded-xl border border-border bg-card p-2 shadow-card animate-rise" onClick={(e) => e.stopPropagation()}>
+        <div className="px-3 py-2 border-b border-border">
+          <p className="text-sm font-semibold text-foreground">{userName}</p>
+          <p className="text-[11px] text-muted-foreground">Aluno</p>
+        </div>
+        <button onClick={() => { onClose(); }} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground">
+          <Cog size={16} /> Configurações
+        </button>
+        <button onClick={handleSignOut} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-destructive hover:bg-destructive/10">
+          <LogOut size={16} /> Sair
+        </button>
+      </div>
+    </div>
+  );
 }

@@ -1,3 +1,5 @@
+import { json, handleOptions, getQuery } from "./_utils.js";
+
 const mockLessons = {
   "lesson-2-2": {
     id: "lesson-2-2",
@@ -52,14 +54,15 @@ const mockLessons = {
   }
 };
 
-export default async (req, res) => {
-  const { courseId, lessonId } = req.query;
+export default async (event) => {
+  if (event.httpMethod === "OPTIONS") return handleOptions();
+  
+  const lessonId = getQuery(event, "lessonId");
   const lesson = mockLessons[lessonId] || mockLessons["lesson-2-2"];
   
   if (!lesson) {
-    res.status(404).json({ error: "Lesson not found" });
-    return;
+    return json({ error: "Lesson not found" }, 404);
   }
   
-  res.status(200).json(lesson);
+  return json(lesson);
 };
