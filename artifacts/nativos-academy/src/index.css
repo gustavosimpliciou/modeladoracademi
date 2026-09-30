@@ -103,7 +103,19 @@
 
 @layer base {
   * { @apply border-border; }
-  html { background: hsl(var(--background)); }
+  html { 
+    background: hsl(var(--background)); 
+    font-size: 60%;
+  }
+  @media (min-width: 640px) {
+    html { font-size: 70%; }
+  }
+  @media (min-width: 1024px) {
+    html { font-size: 80%; }
+  }
+  @media (min-width: 1280px) {
+    html { font-size: 90%; }
+  }
   body {
     @apply font-sans antialiased bg-background text-foreground;
     min-width: 320px;
