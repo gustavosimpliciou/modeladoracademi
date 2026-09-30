@@ -1,0 +1,12 @@
+[build]
+  base = "."
+  command = "pnpm install --ignore-scripts --frozen-lockfile && pnpm --filter @workspace/nativos-academy run build"
+  publish = "artifacts/nativos-academy/dist/public"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
