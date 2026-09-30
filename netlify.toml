@@ -31,17 +31,17 @@
 
 [[redirects]]
   from = "/api/courses/:courseId"
-  to = "/.netlify/functions/courses-[courseId]"
+  to = "/.netlify/functions/courses-courseId"
   status = 200
 
 [[redirects]]
   from = "/api/courses/:courseId/lessons/:lessonId"
-  to = "/.netlify/functions/courses-[courseId]-lessons-[lessonId]"
+  to = "/.netlify/functions/courses-courseId-lessons-lessonId"
   status = 200
 
 [[redirects]]
   from = "/api/progress/:lessonId"
-  to = "/.netlify/functions/progress-[lessonId]"
+  to = "/.netlify/functions/progress-lessonId"
   status = 200
 
 [[redirects]]
