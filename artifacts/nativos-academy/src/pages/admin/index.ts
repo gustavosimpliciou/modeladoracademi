@@ -1,0 +1,11 @@
+export { AdminDashboard } from './dashboard';
+export { AdminCourses } from './courses';
+export { AdminCourseBuilder } from './course-builder';
+export { AdminMediaLibrary } from './media';
+export { AdminStudents } from './students';
+export { AdminQuizzes } from './quizzes';
+export { AdminAnalytics } from './analytics';
+export { AdminSettings } from './settings';
+export { AdminLogs } from './logs';
+export { AdminPersonalization } from './personalization';
+export { AdminInstructors } from './instructors';

@@ -16,6 +16,14 @@ import {
   LandingPage,
   LessonPage,
 } from '@/pages/academy-pages';
+import { AdminDashboard } from '@/pages/admin/dashboard';
+import { AdminCourses } from '@/pages/admin/courses';
+import { AdminCourseBuilder } from '@/pages/admin/course-builder';
+import { AdminMediaLibrary } from '@/pages/admin/media';
+import { AdminStudents } from '@/pages/admin/students';
+import { AdminQuizzes } from '@/pages/admin/quizzes';
+import { AdminAnalytics } from '@/pages/admin/analytics';
+import { AdminSettings } from '@/pages/admin/settings';
 import {
   Route,
   Redirect,
@@ -145,6 +153,17 @@ function Router() {
         <Route path="/atividades"><Protected><ActivitiesPage /></Protected></Route>
         <Route path="/sign-in/*?" component={SignInPage} />
         <Route path="/sign-up/*?" component={SignUpPage} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin"><Protected><AdminDashboard /></Protected></Route>
+        <Route path="/admin/cursos"><Protected><AdminCourses /></Protected></Route>
+        <Route path="/admin/construtor"><Protected><AdminCourseBuilder /></Protected></Route>
+        <Route path="/admin/midia"><Protected><AdminMediaLibrary /></Protected></Route>
+        <Route path="/admin/alunos"><Protected><AdminStudents /></Protected></Route>
+        <Route path="/admin/quizzes"><Protected><AdminQuizzes /></Protected></Route>
+        <Route path="/admin/analytics"><Protected><AdminAnalytics /></Protected></Route>
+        <Route path="/admin/configuracoes"><Protected><AdminSettings /></Protected></Route>
+        
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
