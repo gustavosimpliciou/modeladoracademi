@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Nativos Academy"
+description = "Plataforma premium de aprendizagem online para alunos acompanharem cursos, aulas, progresso, atividades e certificados em uma experiência responsiva e persistente."
+version = "1.0.0"
+id = "artifacts/nativos-academy"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22651
+
+[services.development]
+run = "pnpm --filter @workspace/nativos-academy run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nativos-academy", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/nativos-academy/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22651"
+BASE_PATH = "/"

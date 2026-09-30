@@ -1,0 +1,333 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Nativos Academy learning platform API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+  - name: dashboard
+  - name: courses
+  - name: learning
+  - name: activities
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Get the student's dashboard
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+  /activity-feed:
+    get:
+      operationId: getActivityFeed
+      tags: [dashboard]
+      summary: Get recent learning activity
+      responses:
+        "200":
+          description: Recent activity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityEvent"
+  /courses:
+    get:
+      operationId: listCourses
+      tags: [courses]
+      summary: List available courses
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [all, in_progress, completed, not_started]
+      responses:
+        "200":
+          description: Courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+  /courses/{courseId}:
+    get:
+      operationId: getCourse
+      tags: [courses]
+      summary: Get a course with its modules and lessons
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+      responses:
+        "200":
+          description: Course detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseDetail"
+        "404":
+          description: Course not found
+  /courses/{courseId}/lessons/{lessonId}:
+    get:
+      operationId: getLesson
+      tags: [learning]
+      summary: Get a lesson and its learning materials
+      parameters:
+        - $ref: "#/components/parameters/CourseId"
+        - $ref: "#/components/parameters/LessonId"
+      responses:
+        "200":
+          description: Lesson detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LessonDetail"
+        "404":
+          description: Lesson not found
+  /progress/{lessonId}:
+    patch:
+      operationId: updateLessonProgress
+      tags: [learning]
+      summary: Save a lesson progress checkpoint
+      parameters:
+        - $ref: "#/components/parameters/LessonId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LessonProgressInput"
+      responses:
+        "200":
+          description: Updated progress
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressUpdate"
+  /activities:
+    get:
+      operationId: listActivities
+      tags: [activities]
+      summary: List activities for the current student
+      responses:
+        "200":
+          description: Activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LearningActivity"
+components:
+  parameters:
+    CourseId:
+      name: courseId
+      in: path
+      required: true
+      schema:
+        type: string
+    LessonId:
+      name: lessonId
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+    Course:
+      type: object
+      required: [id, slug, title, category, level, duration, modules, lessons, progress, thumbnail, status]
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        title: { type: string }
+        description: { type: string }
+        category: { type: string }
+        level: { type: string }
+        duration: { type: string }
+        modules: { type: integer }
+        lessons: { type: integer }
+        progress: { type: number }
+        thumbnail: { type: string }
+        status:
+          type: string
+          enum: [in_progress, completed, not_started]
+        currentModule: { type: ["string", "null"] }
+        currentLesson: { type: ["string", "null"] }
+    Module:
+      type: object
+      required: [id, title, position, lessonCount, completedLessons, progress, status, lessons]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        position: { type: integer }
+        lessonCount: { type: integer }
+        completedLessons: { type: integer }
+        progress: { type: number }
+        status:
+          type: string
+          enum: [locked, available, in_progress, completed]
+        lessons:
+          type: array
+          items:
+            $ref: "#/components/schemas/Lesson"
+    Lesson:
+      type: object
+      required: [id, title, duration, position, status, type]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        duration: { type: string }
+        position: { type: integer }
+        type: { type: string }
+        status:
+          type: string
+          enum: [locked, available, in_progress, completed]
+        completed: { type: boolean }
+        videoPosition: { type: integer }
+        videoDuration: { type: integer }
+    CourseDetail:
+      allOf:
+        - $ref: "#/components/schemas/Course"
+        - type: object
+          required: [instructor, objectives, modulesDetail]
+          properties:
+            instructor: { type: string }
+            instructorRole: { type: string }
+            objectives:
+              type: array
+              items: { type: string }
+            requirements:
+              type: array
+              items: { type: string }
+            modulesDetail:
+              type: array
+              items:
+                $ref: "#/components/schemas/Module"
+    LessonDetail:
+      allOf:
+        - $ref: "#/components/schemas/Lesson"
+        - type: object
+          required: [courseId, courseTitle, moduleTitle, description, highlights, materials, nextLessonId]
+          properties:
+            courseId: { type: string }
+            courseTitle: { type: string }
+            moduleTitle: { type: string }
+            description: { type: string }
+            highlights:
+              type: array
+              items: { type: string }
+            materials:
+              type: array
+              items:
+                $ref: "#/components/schemas/Material"
+            nextLessonId: { type: ["string", "null"] }
+    Material:
+      type: object
+      required: [id, name, type, size]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        type: { type: string }
+        size: { type: string }
+        url: { type: ["string", "null"] }
+    Dashboard:
+      type: object
+      required: [user, featuredCourse, stats, courses]
+      properties:
+        user:
+          $ref: "#/components/schemas/UserSummary"
+        featuredCourse:
+          $ref: "#/components/schemas/Course"
+        stats:
+          type: array
+          items:
+            $ref: "#/components/schemas/DashboardStat"
+        courses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Course"
+    UserSummary:
+      type: object
+      required: [name, role, initials]
+      properties:
+        name: { type: string }
+        role: { type: string }
+        initials: { type: string }
+        avatarUrl: { type: ["string", "null"] }
+    DashboardStat:
+      type: object
+      required: [label, value, caption, icon, trend]
+      properties:
+        label: { type: string }
+        value: { type: string }
+        caption: { type: string }
+        icon: { type: string }
+        trend: { type: ["string", "null"] }
+    ActivityEvent:
+      type: object
+      required: [id, title, course, time, type]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        course: { type: string }
+        time: { type: string }
+        type: { type: string }
+    LearningActivity:
+      type: object
+      required: [id, title, course, module, status, dueDate, type]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        course: { type: string }
+        module: { type: string }
+        status: { type: string }
+        dueDate: { type: string }
+        type: { type: string }
+    LessonProgressInput:
+      type: object
+      required: [position, completed]
+      properties:
+        position: { type: integer, minimum: 0 }
+        completed: { type: boolean }
+    ProgressUpdate:
+      type: object
+      required: [lessonId, position, completed, courseProgress]
+      properties:
+        lessonId: { type: string }
+        position: { type: integer }
+        completed: { type: boolean }
+        courseProgress: { type: number }

@@ -1,0 +1,1 @@
+- [Academy authentication](clerk-and-api-auth.md) — Clerk is the managed auth boundary for browser sessions and must stay base-path aware.
