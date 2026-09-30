@@ -20,7 +20,7 @@ import {
   X,
 } from 'lucide-react';
 import { useState, type ReactNode, useRef, useEffect } from 'react';
-import { useSignOut } from '@clerk/react';
+import { useClerk } from '@clerk/react';
 
 export function Mark({ compact = false }: { compact?: boolean }) {
   return (
@@ -201,7 +201,7 @@ export function CTAButton({ href, children, secondary = false, onClick, classNam
 }
 
 function UserMenu({ userName, userInitials, onClose }: { userName: string; userInitials: string; onClose: () => void }) {
-  const { signOut } = useSignOut();
+  const { signOut } = useClerk();
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
