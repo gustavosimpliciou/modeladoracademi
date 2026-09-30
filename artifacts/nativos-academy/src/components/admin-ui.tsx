@@ -1,7 +1,16 @@
 import { useState, type ReactNode, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import {
-  LayoutDashboard, BookOpen, Layers, Play, HelpCircle, FileText, Users, GraduationCap, Award, Image, FolderOpen, Tag, Bell, BarChart3, Palette, Settings, ScrollText, Menu, X, LogOut, ChevronDown, Search, Plus, Video, ClipboardList, Upload, MessageSquare, Shield, Database, HardDrive, Activity, Trash2, Edit, Eye, MoreVertical, Check, AlertTriangle, Info, TrendingUp, Clock, Star, Download, Filter, RefreshCw, Save, ArrowLeft, ArrowRight, ChevronRight, ChevronLeft, GripVertical, Copy, ExternalLink, Link2, Unlock, Lock, EyeOff, Calendar, Target, Zap, Heart, ThumbsUp, ThumbsDown, Flag, Bookmark, Share2, Send, Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Youtube, Linkedin, Github, MessageCircle, Cog, ChevronUp, ArrowUp, ArrowDown, Minus
+  LayoutDashboard, BookOpen, Layers, Play, HelpCircle, FileText, Users, GraduationCap,
+  Award, Image, FolderOpen, Tag, Bell, BarChart3, Palette, Settings, ScrollText,
+  Menu, X, LogOut, ChevronDown, Search, Plus, Video, ClipboardList, Upload,
+  MessageSquare, Shield, Database, HardDrive, Activity, Trash2, Edit, Eye,
+  MoreVertical, Check, AlertTriangle, Info, TrendingUp, Clock, Star, Download,
+  Filter, RefreshCw, Save, ArrowLeft, ArrowRight, ChevronRight, ChevronLeft,
+  GripVertical, Copy, ExternalLink, Link2, Unlock, Lock, EyeOff, Calendar,
+  Target, Zap, Heart, ThumbsUp, ThumbsDown, Flag, Bookmark, Share2, Send,
+  Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Youtube, Linkedin,
+  Github, MessageCircle, Cog, ChevronUp, ArrowUp, ArrowDown, Minus
 } from 'lucide-react';
 import { useClerk } from '@clerk/react';
 
@@ -286,7 +295,7 @@ export function AdminBadge({ children, variant = 'default' }: { children: ReactN
 }
 
 export function AdminToggle({ checked, onChange, label }: { checked: boolean; onChange: (checked: boolean) => void; label?: string; }) {
-  return <label className="flex cursor-pointer items-center gap-3"><div onClick={() => onChange(!checked)} className={`relative h-6 w-11 rounded-full transition-colors ${checked ? 'bg-[#ff6a00]' : 'bg-[#333]'}`}><div className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-0.5'}`} /></div>{label && <span className="text-sm text-gray-300">{label}</span>}</label>;
+  return <label className="flex cursor-pointer items-center gap-3"><div onClick={() => onChange(!checked)} className={`relative h-6 w-11 cursor-pointer rounded-full transition-colors ${checked ? 'bg-[#ff6a00]' : 'bg-[#333]'}`}><div className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-0.5'}`} /></div>{label && <span className="text-sm text-gray-300">{label}</span>}</label>;
 }
 
 export function AdminProgressBar({ value, max = 100, label }: { value: number; max?: number; label?: string; }) {
@@ -580,7 +589,7 @@ export function AdminColorPicker({ value, onChange, label }: { value: string; on
       {label && <label className="mb-1.5 block text-sm font-medium text-gray-300">{label}</label>}
       <div className="flex items-center gap-3">
         <input type="color" value={value} onChange={(e) => onChange(e.target.value)} className="h-10 w-14 cursor-pointer rounded-lg border border-[#333] bg-transparent" />
-        <input type="text" value={value} onChange={(e) => onChange(e.target.value)} className="flex-1 rounded-lg border border-[#333] bg-[#1a1a1a] px-3 py-2 text-sm text-white outline-none focus:border-[#ff6a00]" />
+        <input type="text" value={value} onChange={(e) => onChange(e.target.value)} className="flex-1 rounded-lg border border-[#333] bg-[#1a1a1a] px-3 py-2 text-sm text-white outline-none transition focus:border-[#ff6a00]" />
       </div>
     </div>
   );
@@ -912,100 +921,4 @@ export function AdminAnalyticsSpaceAround({ children }: { children: ReactNode; }
 
 export function AdminAnalyticsSpaceEvenly({ children }: { children: ReactNode; }) {
   return <div className="flex items-center justify-evenly">{children}</div>;
-}
-
-export function AdminAnalyticsGap({ children, gap = 8 }: { children: ReactNode; gap?: number; }) {
-  return <div className={`gap-${gap / 4}`}>{children}</div>;
-}
-
-export function AdminAnalyticsMargin({ children, margin = 0 }: { children: ReactNode; margin?: number; }) {
-  return <div className={`m-${margin / 4}`}>{children}</div>;
-}
-
-export function AdminAnalyticsPadding({ children, padding = 0 }: { children: ReactNode; padding?: number; }) {
-  return <div className={`p-${padding / 4}`}>{children}</div>;
-}
-
-export function AdminAnalyticsWidth({ children, width = 'auto' }: { children: ReactNode; width?: string | number; }) {
-  return <div style={{ width }}>{children}</div>;
-}
-
-export function AdminAnalyticsHeight({ children, height = 'auto' }: { children: ReactNode; height?: string | number; }) {
-  return <div style={{ height }}>{children}</div>;
-}
-
-export function AdminAnalyticsMaxWidth({ children, maxWidth = '100%' }: { children: ReactNode; maxWidth?: string | number; }) {
-  return <div style={{ maxWidth }}>{children}</div>;
-}
-
-export function AdminAnalyticsMinWidth({ children, minWidth = '0' }: { children: ReactNode; minWidth?: string | number; }) {
-  return <div style={{ minWidth }}>{children}</div>;
-}
-
-export function AdminAnalyticsMaxHeight({ children, maxHeight = 'none' }: { children: ReactNode; maxHeight?: string | number; }) {
-  return <div style={{ maxHeight }}>{children}</div>;
-}
-
-export function AdminAnalyticsMinHeight({ children, minHeight = '0' }: { children: ReactNode; minHeight?: string | number; }) {
-  return <div style={{ minHeight }}>{children}</div>;
-}
-
-export function AdminAnalyticsOverflow({ children, overflow = 'visible' }: { children: ReactNode; overflow?: 'visible' | 'hidden' | 'scroll' | 'auto'; }) {
-  return <div style={{ overflow }}>{children}</div>;
-}
-
-export function AdminAnalyticsOverflowX({ children, overflowX = 'visible' }: { children: ReactNode; overflowX?: 'visible' | 'hidden' | 'scroll' | 'auto'; }) {
-  return <div style={{ overflowX }}>{children}</div>;
-}
-
-export function AdminAnalyticsOverflowY({ children, overflowY = 'visible' }: { children: ReactNode; overflowY?: 'visible' | 'hidden' | 'scroll' | 'auto'; }) {
-  return <div style={{ overflowY }}>{children}</div>;
-}
-
-export function AdminAnalyticsPosition({ children, position = 'static' }: { children: ReactNode; position?: 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky'; }) {
-  return <div style={{ position }}>{children}</div>;
-}
-
-export function AdminAnalyticsTop({ children, top = 'auto' }: { children: ReactNode; top?: string | number; }) {
-  return <div style={{ top }}>{children}</div>;
-}
-
-export function AdminAnalyticsRight({ children, right = 'auto' }: { children: ReactNode; right?: string | number; }) {
-  return <div style={{ right }}>{children}</div>;
-}
-
-export function AdminAnalyticsBottom({ children, bottom = 'auto' }: { children: ReactNode; bottom?: string | number; }) {
-  return <div style={{ bottom }}>{children}</div>;
-}
-
-export function AdminAnalyticsLeft({ children, left = 'auto' }: { children: ReactNode; left?: string | number; }) {
-  return <div style={{ left }}>{children}</div>;
-}
-
-export function AdminAnalyticsZIndex({ children, zIndex = 'auto' }: { children: ReactNode; zIndex?: string | number; }) {
-  return <div style={{ zIndex }}>{children}</div>;
-}
-
-export function AdminAnalyticsOpacity({ children, opacity = 1 }: { children: ReactNode; opacity?: number; }) {
-  return <div style={{ opacity }}>{children}</div>;
-}
-
-export function AdminAnalyticsTransform({ children, transform = 'none' }: { children: ReactNode; transform?: string; }) {
-  return <div style={{ transform }}>{children}</div>;
-}
-
-export function AdminAnalyticsTransition({ children, transition = 'none' }: { children: ReactNode; transition?: string; }) {
-  return <div style={{ transition }}>{children}</div>;
-}
-
-export function AdminAnalyticsAnimation({ children, animation = 'none' }: { children: ReactNode; animation?: string; }) {
-  return <div style={{ animation }}>{children}</div>;
-}
-
-export function AdminAnalyticsCursor({ children, cursor = 'auto' }: { children: ReactNode; cursor?: 'auto' | 'default' | 'pointer' | 'wait' | 'text' | 'move' | 'help' | 'not-allowed'; }) {
-  return <div style={{ cursor }}>{children}</div>;
-}
-
-export function AdminAnalyticsUserSelect({ children, userSelect = 'auto' }: { children: ReactNode; userSelect?: 'auto' | 'none' | 'text' | 'contain' | 'all'; }) {
-  return <div style={{ userSelect }}>{children}</div>;
 }
