@@ -8,6 +8,7 @@
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
     "test:netlify": "node scripts/test-netlify.mjs",
+    "db:migrate:netlify": "node scripts/migrate-netlify.mjs",
     "build:netlify": "pnpm run typecheck:libs && pnpm --filter @workspace/nativos-academy run typecheck && pnpm --filter @workspace/nativos-academy run build && node scripts/build-netlify.mjs"
   },
   "private": true,

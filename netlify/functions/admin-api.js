@@ -1023,6 +1023,7 @@ export const handler = async (event) => {
     
   } catch (error) {
     console.error("Admin API error:", error);
+    if (error.code === 'DATABASE_UNAVAILABLE') return json({ error: error.message }, 503);
     if (error instanceof SyntaxError) return json({ error: "JSON inválido" }, 400);
     return json({ error: "Não foi possível acessar o banco ou concluir a operação. Verifique os logs da função e a configuração do banco." }, 500);
   }

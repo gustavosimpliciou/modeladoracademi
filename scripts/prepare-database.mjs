@@ -3,6 +3,8 @@ import { additiveStatements } from './netlify-schema.mjs';
 export async function prepareDatabase(client, source) {
   await client.query('BEGIN');
   try {
+    await client.query("SET LOCAL lock_timeout = '5s'");
+    await client.query("SET LOCAL statement_timeout = '20s'");
     await client.query("SELECT pg_advisory_xact_lock(hashtext('nativos-academy-schema'))");
     await client.query('CREATE TABLE IF NOT EXISTS academy_schema_migrations (version text PRIMARY KEY, applied_at timestamptz NOT NULL DEFAULT now())');
     const applied = await client.query("SELECT version FROM academy_schema_migrations WHERE version = '0000'");

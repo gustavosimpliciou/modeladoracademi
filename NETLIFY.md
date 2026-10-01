@@ -15,7 +15,13 @@ Configure os valores no painel, sem colocá-los no Git:
 
 Nunca use o prefixo VITE_ para a chave secreta, segredo do webhook ou conexão do banco.
 
-O build executa a verificação TypeScript, compila o site e as funções, e prepara o banco numa transação. A preparação cria as tabelas ausentes e acrescenta colunas ausentes sem remover tabelas, colunas ou registros. Falhas de conexão ou incompatibilidades reais do banco interrompem o deploy; consulte a etapa Database setup failed. Colunas acrescentadas a tabelas históricas permitem NULL para preservar registros anteriores; isso não substitui futuras migrações versionadas de dados.
+O build executa a verificação TypeScript e compila o site e as funções sem abrir uma conexão PostgreSQL. O banco é preparado numa transação no primeiro acesso administrativo com sessão e e-mail verificados, ou ao receber um webhook com assinatura válida. Uma tabela de versões evita repetir a preparação a cada chamada. Registros existentes são preservados. Colunas acrescentadas a tabelas históricas permitem NULL para preservar registros anteriores; isso não substitui futuras migrações versionadas de dados.
+
+Para antecipar a preparação, execute `pnpm run db:migrate:netlify` num ambiente com DATABASE_URL configurada. Falhas reais de conexão retornam HTTP 503 no admin: um deploy publicado não comprova que o banco está acessível.
+
+No Supabase, copie a URI do **Session pooler**, porta **5432**, no painel **Connect**. O endereço direto `db.…supabase.co` usa IPv6 por padrão; o pooler aceita IPv4. Use a URI inteira fornecida pelo painel, pois usuário e hostname são diferentes. Configure DATABASE_URL no escopo Functions do Netlify. Não divulgue a senha ou a URI completa. Confirme também que o projeto Supabase está ativo e que as restrições de rede permitem a conexão.
+
+Referência: https://supabase.com/docs/guides/database/connecting-to-postgres
 
 ## Testar
 
