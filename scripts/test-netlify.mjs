@@ -14,6 +14,7 @@ assert.equal((await database.query('SELECT title FROM academy_courses WHERE id =
 await database.exec(`DELETE FROM academy_courses WHERE id = 'legacy'`);
 globalThis.__academyTestDb = database;
 process.env.CLERK_SECRET_KEY = 'test-secret';
+process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/academy';
 process.env.ADMIN_EMAIL = 'nativos3d.adm@gmail.com';
 process.env.URL = 'https://academy.example';
 await build({
@@ -35,6 +36,14 @@ await build({
 });
 const { admin, webhook } = await import('../work/netlify-test-bundle.mjs');
 const event = (path, token, method = 'GET', body) => ({ path, httpMethod: method, headers: token ? { authorization: `Bearer ${token}` } : {}, body: body ? JSON.stringify(body) : null });
+for (const invalidUrl of ['', 'https://project.supabase.co', 'not-a-url']) {
+  process.env.DATABASE_URL = invalidUrl;
+  const response = await admin(event('/api/admin/me', 'admin'));
+  assert.equal(response.statusCode, 503);
+  assert.equal(JSON.parse(response.body).code, 'DATABASE_CONFIGURATION_INVALID');
+}
+assert.equal((await admin(event('/api/admin/me', undefined, 'OPTIONS'))).statusCode, 200);
+process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/academy';
 assert.equal((await admin(event('/api/admin/me'))).statusCode, 401);
 assert.equal((await admin(event('/api/admin/me', 'forged'))).statusCode, 401);
 assert.equal((await admin(event('/api/admin/me', 'unverified'))).statusCode, 401);

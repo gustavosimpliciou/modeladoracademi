@@ -23,6 +23,14 @@ No Supabase, copie a URI do **Session pooler**, porta **5432**, no painel **Conn
 
 Referência: https://supabase.com/docs/guides/database/connecting-to-postgres
 
+### Erro confirmado no site: DATABASE_URL must be a PostgreSQL connection string
+
+Esse erro interrompe a função antes da autenticação do Clerk. Em Supabase → Connect → Session pooler, copie a conexão PostgreSQL e substitua o campo de senha pela senha do banco. No Netlify → Environment variables, edite DATABASE_URL no contexto Production e escopo Functions. Cole somente o valor da URI, sem aspas nem o prefixo DATABASE_URL=, e execute um novo deploy.
+
+O formato é `postgresql://postgres.REFERENCIA:SENHA@HOST-DO-POOLER:5432/postgres`. Copie usuário e host exatos do painel; não use literalmente este exemplo. Caracteres especiais da senha precisam de codificação percentual na URI. O endereço `https://REFERENCIA.supabase.co` é a URL da API Supabase e não serve como DATABASE_URL. A chave anon/publishable e a service_role também não servem como conexão do banco.
+
+Depois do deploy, uma chamada sem login a `/api/admin/me` deve retornar 401, em vez de 502. Com a sessão e o e-mail administrador verificados, deve retornar 200 e SUPER_ADMIN. O aviso de chaves de desenvolvimento do Clerk não explica o erro de formato do banco.
+
 ## Testar
 
 1. Aguarde o deploy ficar Published e abra a URL fornecida pelo Netlify.
