@@ -1,0 +1,41 @@
+# Deploy no Netlify e teste do administrador
+
+O projeto usa a raiz do monorepo como Base directory. No painel do Netlify, configure Package directory como `artifacts/nativos-academy` (o log anterior apontava para o sandbox). O arquivo `netlify.toml` define o comando, a pasta publicada e as funções.
+
+## Variáveis do Netlify
+
+Configure os valores no painel, sem colocá-los no Git:
+
+- `VITE_CLERK_PUBLISHABLE_KEY`: chave pública da mesma instância Clerk utilizada no backend; escopo Builds.
+- `CLERK_SECRET_KEY`: chave secreta dessa instância; escopo Functions.
+- `DATABASE_URL`: conexão PostgreSQL com permissão para criar/atualizar o schema; escopos Builds e Functions. Use a configuração TLS fornecida pelo provedor na URL.
+- `CLERK_WEBHOOK_SECRET`: segredo de assinatura do endpoint Clerk; escopo Functions.
+- `ADMIN_EMAIL`: opcional, padrão `nativos3d.adm@gmail.com`.
+- `CLERK_AUTHORIZED_PARTIES`: opcional, lista de origens separadas por vírgula para domínio personalizado/ambiente local. Os endereços URL e DEPLOY_PRIME_URL do Netlify entram automaticamente na validação.
+
+Nunca use o prefixo VITE_ para a chave secreta, segredo do webhook ou conexão do banco.
+
+O build executa a verificação TypeScript, compila o site e as funções, e prepara o banco numa transação. A preparação cria as tabelas ausentes e acrescenta colunas ausentes sem remover tabelas, colunas ou registros. Falhas de conexão ou incompatibilidades reais do banco interrompem o deploy; consulte a etapa Database setup failed. Colunas acrescentadas a tabelas históricas permitem NULL para preservar registros anteriores; isso não substitui futuras migrações versionadas de dados.
+
+## Testar
+
+1. Aguarde o deploy ficar Published e abra a URL fornecida pelo Netlify.
+2. Entre ou crie a conta `nativos3d.adm@gmail.com` e verifique esse e-mail no Clerk.
+3. Abra `/admin`. O servidor valida a sessão e provisiona o papel SUPER_ADMIN no primeiro acesso, sem depender do webhook ter sido recebido previamente.
+4. Abra Cursos, crie um curso de teste, recarregue e confirme a persistência. Edite o título, publique/despublique e exclua o curso de teste.
+5. Abra Configurações e salve a marca; recarregue e confirme o valor salvo. Confira os eventos em Logs.
+6. Uma conta comum deve receber acesso negado ao abrir `/admin`.
+
+Depois de ter a URL, configure o webhook do Clerk para `https://SEU-SITE/api/clerk/webhook`, com os eventos user.created, user.updated e user.deleted. Se usar uma instância de produção do Clerk, configure o domínio de produção nela conforme a documentação do Clerk.
+
+## Validação local
+
+- `pnpm run typecheck`
+- `pnpm run build:netlify`
+- `pnpm run test:netlify`
+
+Os testes usam PostgreSQL embarcado (PGlite) e simulam a resposta de verificação do Clerk para testar autorização, provisionamento e operações no banco. A produção utiliza o SDK oficial do Clerk, incluindo assinatura e validade do token. Um webhook sem assinatura é rejeitado pelo verificador real.
+
+A publicação e o login real só podem ser confirmados após o Netlify executar o novo build com as variáveis reais. O catálogo e o progresso do aluno ainda têm funções demonstrativas legadas; este reparo cobre compilação, deploy e acesso administrativo, sem declarar a plataforma de ensino inteira concluída.
+
+Referências: https://clerk.com/docs/reference/backend/verify-token e https://docs.netlify.com/build/functions/configuration/.

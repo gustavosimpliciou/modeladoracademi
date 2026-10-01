@@ -1,8 +1,12 @@
+import { useAdminFetch } from '@/lib/admin-fetch';
+import { AdminModal, AdminImageUpload, AdminColorPicker, AdminToggle, AdminModuleCard, AdminLessonCard, AdminVideoUpload, AdminStatCard } from '../../components/admin-ui';
+import { ClipboardList, Video, Layers, Play, Upload, Key, FileText, LayoutDashboard, Settings, Palette, HardDrive, Server, Database } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { AdminLayout, AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminInput, AdminSelect, AdminTextarea, AdminSearchInput, AdminFilterSelect, AdminPagination, AdminConfirmDialog, AdminToast, AdminInstructorCard, AdminCategoryCard, AdminBannerCard, AdminCertificateCard, AdminNotificationCard, AdminAnnouncementCard, AdminNotificationTemplateCard, AdminUserCard, AdminRoleCard, AdminPermissionCard, AdminTrashItemCard, AdminEnrollmentCard, AdminInstructorAssignmentCard, AdminSubmissionCard, AdminQuizAttemptCard, AdminQuestionBankCard, AdminQuestionCard, AdminActivityCard, AdminAssignmentCard, AdminVideoCard, AdminTrashCard, AdminSystemLogCard, AdminLogCard, AdminSettingCard, AdminBrandSettingsCard, AdminHomeSectionCard, AdminAnalyticsChartCard, AdminAnalyticsTableCard, AdminAnalyticsProgressCard, AdminAnalyticsBadge, AdminAnalyticsTrendIndicator, AdminAnalyticsDateRangePicker, AdminAnalyticsExportButton, AdminAnalyticsRefreshButton, AdminAnalyticsFilterBar, AdminAnalyticsCardGrid, AdminAnalyticsSection, AdminAnalyticsTabs, AdminAnalyticsTooltip, AdminAnalyticsLegend, AdminAnalyticsNoData, AdminAnalyticsSkeleton, AdminAnalyticsError, AdminAnalyticsContainer, AdminAnalyticsHeader, AdminAnalyticsFooter, AdminAnalyticsDivider, AdminAnalyticsSpacer, AdminAnalyticsFlex, AdminAnalyticsGrid, AdminAnalyticsCol, AdminAnalyticsRow, AdminAnalyticsStack, AdminAnalyticsInline, AdminAnalyticsWrap, AdminAnalyticsCenter, AdminAnalyticsBetween, AdminAnalyticsEnd, AdminAnalyticsStart, AdminAnalyticsTop, AdminAnalyticsBottom, AdminAnalyticsMiddle, AdminAnalyticsBaseline, AdminAnalyticsStretch, AdminAnalyticsEvenly, AdminAnalyticsAround, AdminAnalyticsSpaceBetween, AdminAnalyticsSpaceAround, AdminAnalyticsSpaceEvenly, AdminAnalyticsGap, AdminAnalyticsMargin, AdminAnalyticsPadding, AdminAnalyticsWidth, AdminAnalyticsHeight, AdminAnalyticsMaxWidth, AdminAnalyticsMinWidth, AdminAnalyticsMaxHeight, AdminAnalyticsMinHeight, AdminAnalyticsOverflow, AdminAnalyticsOverflowX, AdminAnalyticsOverflowY, AdminAnalyticsPosition, AdminAnalyticsTop as AdminAnalyticsTop2, AdminAnalyticsRight, AdminAnalyticsBottom as AdminAnalyticsBottom2, AdminAnalyticsLeft, AdminAnalyticsZIndex, AdminAnalyticsOpacity, AdminAnalyticsTransform, AdminAnalyticsTransition, AdminAnalyticsAnimation, AdminAnalyticsCursor, AdminAnalyticsUserSelect } from '../../components/admin-ui';
-import { GraduationCap, Tag, Image, Award, Bell, MessageSquare, Users, Shield, Trash2, Plus, Search, Filter, Download, RefreshCw, Eye, Edit, Copy, MoreVertical, CheckCircle, XCircle, AlertTriangle, Info, Clock, Star, TrendingUp, Activity, Calendar, Target, Zap, Heart, ThumbsUp, ThumbsDown, Flag, Bookmark, Share2, Send, Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Youtube, Linkedin, Github, MessageCircle, MessageSquareDashed, MessageSquareOff, MessageSquarePlus, MessageSquareShare, MessageSquareReply, MessageSquareWarning, MessageSquareX, MessageSquareLock, MessageSquareHeart, MessageSquareStar, MessageSquareFlag, MessageSquareBookmark, MessageSquareTag, MessageSquareLink, MessageSquareExternal, MessageSquareCopy, MessageSquareCheck, MessageSquareEdit, MessageSquareTrash, MessageSquareArchive, MessageSquareRestore, MessageSquareDownload, MessageSquareUpload, MessageSquareSync, MessageSquareRefresh, MessageSquareHistory, MessageSquareVersion, MessageSquareDiff, MessageSquareCompare, MessageSquareMerge, MessageSquareSplit, MessageSquareJoin, MessageSquareGroup, MessageSquareUngroup, MessageSquareSort, MessageSquareFilter, MessageSquareSearch, MessageSquareFind, MessageSquareReplace, MessageSquareSwap, MessageSquareExchange, MessageSquareTransfer, MessageSquareShare2, MessageSquareLock2, MessageSquareUnlock, MessageSquareKey2, MessageSquareShield, MessageSquareShieldCheck, MessageSquareShieldX, MessageSquareShieldAlert, MessageSquareShieldQuestion, MessageSquareShieldPlus, MessageSquareShieldMinus, MessageSquareShieldEdit, MessageSquareShieldTrash, MessageSquareShieldArchive, MessageSquareShieldRestore, MessageSquareShieldDownload, MessageSquareShieldUpload, MessageSquareShieldSync, MessageSquareShieldRefresh, MessageSquareShieldHistory, MessageSquareShieldVersion, MessageSquareShieldDiff, MessageSquareShieldCompare, MessageSquareShieldMerge, MessageSquareShieldSplit, MessageSquareShieldJoin, MessageSquareShieldGroup, MessageSquareShieldUngroup, MessageSquareShieldSort, MessageSquareShieldFilter, MessageSquareShieldSearch, MessageSquareShieldFind, MessageSquareShieldReplace, MessageSquareShieldSwap, MessageSquareShieldExchange, MessageSquareShieldTransfer, MessageSquareShieldShare, MessageSquareShare2 as MessageSquareShare2Icon } from 'lucide-react';
+import { AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminInput, AdminSelect, AdminTextarea, AdminToast, AdminInstructorCard, AdminCategoryCard, AdminBannerCard, AdminCertificateCard, AdminNotificationCard, AdminAnnouncementCard, AdminNotificationTemplateCard, AdminUserCard, AdminRoleCard, AdminPermissionCard, AdminTrashItemCard, AdminEnrollmentCard, AdminSubmissionCard, AdminQuizAttemptCard, AdminQuestionBankCard, AdminActivityCard, AdminVideoCard, AdminLogCard, AdminAnalyticsTableCard, AdminAnalyticsProgressCard, AdminAnalyticsCardGrid, AdminAnalyticsSection, AdminAnalyticsContainer, AdminAnalyticsDivider } from '../../components/admin-ui';
+import { GraduationCap, Tag, Image, Award, Bell, MessageSquare, Users, Shield, Trash2, Plus, Eye, Edit, CheckCircle, Clock, Activity, Target, Send, Mail } from 'lucide-react';
 
 export function AdminInstructors() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [instructors, setInstructors] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -18,8 +22,8 @@ export function AdminInstructors() {
 
   const fetchInstructors = () => {
     setLoading(true);
-    fetch('/api/admin/instructors', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/instructors', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setInstructors(data.instructors || []); setLoading(false); })
@@ -29,9 +33,9 @@ export function AdminInstructors() {
   useEffect(() => { fetchInstructors(); }, []);
 
   const handleCreate = () => {
-    fetch('/api/admin/instructors', {
+    adminFetch('/api/admin/instructors', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Instrutor criado com sucesso!'); fetchInstructors(); })
@@ -91,6 +95,7 @@ export function AdminInstructors() {
 }
 
 export function AdminBanners() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [banners, setBanners] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -108,8 +113,8 @@ export function AdminBanners() {
 
   const fetchBanners = () => {
     setLoading(true);
-    fetch('/api/admin/banners', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/banners', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setBanners(data.banners || []); setLoading(false); })
@@ -119,9 +124,9 @@ export function AdminBanners() {
   useEffect(() => { fetchBanners(); }, []);
 
   const handleCreate = () => {
-    fetch('/api/admin/banners', {
+    adminFetch('/api/admin/banners', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Banner criado com sucesso!'); fetchBanners(); })
@@ -129,9 +134,9 @@ export function AdminBanners() {
   };
 
   const handleToggle = (banner: any) => {
-    fetch(`/api/admin/banners/${banner.id}/toggle`, {
+    adminFetch(`/api/admin/banners/${banner.id}/toggle`, {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: {  },
     })
       .then(() => { setToast('Banner atualizado!'); fetchBanners(); })
       .catch(() => setToast('Erro ao atualizar'));
@@ -196,6 +201,7 @@ export function AdminBanners() {
 }
 
 export function AdminCategories() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -211,8 +217,8 @@ export function AdminCategories() {
 
   const fetchCategories = () => {
     setLoading(true);
-    fetch('/api/admin/categories', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/categories', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setCategories(data.categories || []); setLoading(false); })
@@ -222,9 +228,9 @@ export function AdminCategories() {
   useEffect(() => { fetchCategories(); }, []);
 
   const handleCreate = () => {
-    fetch('/api/admin/categories', {
+    adminFetch('/api/admin/categories', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Categoria criada com sucesso!'); fetchCategories(); })
@@ -287,6 +293,7 @@ export function AdminCategories() {
 }
 
 export function AdminCertificates() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [certificates, setCertificates] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -294,8 +301,8 @@ export function AdminCertificates() {
 
   const fetchCertificates = () => {
     setLoading(true);
-    fetch('/api/admin/certificates', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/certificates', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setCertificates(data.certificates || []); setLoading(false); })
@@ -362,6 +369,7 @@ export function AdminCertificates() {
 }
 
 export function AdminNotifications() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -375,8 +383,8 @@ export function AdminNotifications() {
 
   const fetchNotifications = () => {
     setLoading(true);
-    fetch('/api/admin/notifications', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/notifications', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setNotifications(data.notifications || []); setLoading(false); })
@@ -386,9 +394,9 @@ export function AdminNotifications() {
   useEffect(() => { fetchNotifications(); }, []);
 
   const handleSend = () => {
-    fetch('/api/admin/notifications', {
+    adminFetch('/api/admin/notifications', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Notificação enviada!'); fetchNotifications(); })
@@ -452,6 +460,7 @@ export function AdminNotifications() {
 }
 
 export function AdminUsers() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -464,8 +473,8 @@ export function AdminUsers() {
 
   const fetchUsers = () => {
     setLoading(true);
-    fetch('/api/admin/users', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/users', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setUsers(data.users || []); setLoading(false); })
@@ -475,9 +484,9 @@ export function AdminUsers() {
   useEffect(() => { fetchUsers(); }, []);
 
   const handleCreate = () => {
-    fetch('/api/admin/users', {
+    adminFetch('/api/admin/users', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Usuário criado com sucesso!'); fetchUsers(); })
@@ -541,6 +550,7 @@ export function AdminUsers() {
 }
 
 export function AdminTrash() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<any[]>([]);
 
@@ -565,7 +575,7 @@ export function AdminTrash() {
           description="Itens excluídos aparecerão aqui"
         />
       ) : (
-        <div classNamegrid gap-4>
+        <div className="grid gap-4">
           {items.map(item => (
             <AdminTrashItemCard
               key={item.id}
@@ -581,6 +591,7 @@ export function AdminTrash() {
 }
 
 export function AdminActivities() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -600,8 +611,8 @@ export function AdminActivities() {
 
   const fetchActivities = () => {
     setLoading(true);
-    fetch('/api/admin/assignments', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/assignments', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setActivities(data.assignments || []); setLoading(false); })
@@ -611,9 +622,9 @@ export function AdminActivities() {
   useEffect(() => { fetchActivities(); }, []);
 
   const handleCreate = () => {
-    fetch('/api/admin/assignments', {
+    adminFetch('/api/admin/assignments', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Atividade criada com sucesso!'); fetchActivities(); })
@@ -681,6 +692,7 @@ export function AdminActivities() {
 }
 
 export function AdminVideos() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState<any[]>([]);
 
@@ -721,6 +733,7 @@ export function AdminVideos() {
 }
 
 export function AdminModules() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [modules, setModules] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -741,9 +754,9 @@ export function AdminModules() {
   useEffect(() => { fetchModules(); }, []);
 
   const handleCreate = () => {
-    fetch('/api/admin/modules', {
+    adminFetch('/api/admin/modules', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Módulo criado com sucesso!'); fetchModules(); })
@@ -801,6 +814,7 @@ export function AdminModules() {
 }
 
 export function AdminLessons() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [lessons, setLessons] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -824,9 +838,9 @@ export function AdminLessons() {
   useEffect(() => { fetchLessons(); }, []);
 
   const handleCreate = () => {
-    fetch('/api/admin/lessons', {
+    adminFetch('/api/admin/lessons', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Aula criada com sucesso!'); fetchLessons(); })
@@ -894,13 +908,14 @@ export function AdminLessons() {
 }
 
 export function AdminSubmissions() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [submissions, setSubmissions] = useState<any[]>([]);
 
   const fetchSubmissions = () => {
     setLoading(true);
-    fetch('/api/admin/submissions', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/submissions', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setSubmissions(data.submissions || []); setLoading(false); })
@@ -942,6 +957,7 @@ export function AdminSubmissions() {
 }
 
 export function AdminEnrollments() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -961,9 +977,9 @@ export function AdminEnrollments() {
   useEffect(() => { fetchEnrollments(); }, []);
 
   const handleCreate = () => {
-    fetch('/api/admin/enrollments', {
+    adminFetch('/api/admin/enrollments', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Aluno matriculado com sucesso!'); fetchEnrollments(); })
@@ -1026,6 +1042,7 @@ export function AdminEnrollments() {
 }
 
 export function AdminAnnouncements() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -1047,9 +1064,9 @@ export function AdminAnnouncements() {
   useEffect(() => { fetchAnnouncements(); }, []);
 
   const handleCreate = () => {
-    fetch('/api/admin/announcements', {
+    adminFetch('/api/admin/announcements', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(() => { setShowModal(false); setToast('Comunicado criado com sucesso!'); fetchAnnouncements(); })
@@ -1121,6 +1138,7 @@ export function AdminAnnouncements() {
 }
 
 export function AdminNotificationTemplates() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [templates, setTemplates] = useState<any[]>([]);
 
@@ -1162,6 +1180,7 @@ export function AdminNotificationTemplates() {
 }
 
 export function AdminRoles() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState<any[]>([]);
   const [permissions, setPermissions] = useState<any[]>([]);
@@ -1225,6 +1244,7 @@ export function AdminRoles() {
 }
 
 export function AdminSystemLogs() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState<any[]>([]);
 
@@ -1251,7 +1271,7 @@ export function AdminSystemLogs() {
       ) : (
         <div className="space-y-3">
           {logs.map(log => (
-            <AdminSystemLogCard key={log.id} log={log} />
+            <AdminLogCard key={log.id} log={log} />
           ))}
         </div>
       )}
@@ -1260,6 +1280,7 @@ export function AdminSystemLogs() {
 }
 
 export function AdminQuestionBank() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [questions, setQuestions] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -1346,13 +1367,14 @@ export function AdminQuestionBank() {
 }
 
 export function AdminQuizResults() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [attempts, setAttempts] = useState<any[]>([]);
 
   const fetchAttempts = () => {
     setLoading(true);
-    fetch('/api/admin/quiz-attempts', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/quiz-attempts', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setAttempts(data.attempts || []); setLoading(false); })
@@ -1393,12 +1415,13 @@ export function AdminQuizResults() {
 }
 
 export function AdminCourseAnalytics() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
 
   useEffect(() => {
-    fetch('/api/admin/analytics', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/analytics', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setData(data); setLoading(false); })
@@ -1447,6 +1470,7 @@ export function AdminCourseAnalytics() {
 }
 
 export function AdminLessonAnalytics() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1486,6 +1510,7 @@ export function AdminLessonAnalytics() {
 }
 
 export function AdminStudentProgress() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1526,6 +1551,7 @@ export function AdminStudentProgress() {
 }
 
 export function AdminCertificateEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1578,6 +1604,7 @@ export function AdminCertificateEditor() {
 }
 
 export function AdminEmailTemplates() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1611,6 +1638,7 @@ export function AdminEmailTemplates() {
 }
 
 export function AdminStorageSettings() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1657,6 +1685,7 @@ export function AdminStorageSettings() {
 }
 
 export function AdminSecuritySettings() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1696,6 +1725,7 @@ export function AdminSecuritySettings() {
 }
 
 export function AdminCourseSettings() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1729,6 +1759,7 @@ export function AdminCourseSettings() {
 }
 
 export function AdminSystemSettings() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1759,6 +1790,7 @@ export function AdminSystemSettings() {
 }
 
 export function AdminFaqEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1786,6 +1818,7 @@ export function AdminFaqEditor() {
 }
 
 export function AdminCategoryEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1813,6 +1846,7 @@ export function AdminCategoryEditor() {
 }
 
 export function AdminBannerEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1840,6 +1874,7 @@ export function AdminBannerEditor() {
 }
 
 export function AdminHomeEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1867,6 +1902,7 @@ export function AdminHomeEditor() {
 }
 
 export function AdminTrashEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1893,6 +1929,7 @@ export function AdminTrashEditor() {
 }
 
 export function AdminLogViewer() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1919,6 +1956,7 @@ export function AdminLogViewer() {
 }
 
 export function AdminSettingsEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1945,6 +1983,7 @@ export function AdminSettingsEditor() {
 }
 
 export function AdminBrandEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1971,6 +2010,7 @@ export function AdminBrandEditor() {
 }
 
 export function AdminUserEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -1997,6 +2037,7 @@ export function AdminUserEditor() {
 }
 
 export function AdminRoleEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2023,6 +2064,7 @@ export function AdminRoleEditor() {
 }
 
 export function AdminPermissionEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2049,6 +2091,7 @@ export function AdminPermissionEditor() {
 }
 
 export function AdminNotificationEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2075,6 +2118,7 @@ export function AdminNotificationEditor() {
 }
 
 export function AdminAnnouncementEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2101,6 +2145,7 @@ export function AdminAnnouncementEditor() {
 }
 
 export function AdminTemplateEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2127,6 +2172,7 @@ export function AdminTemplateEditor() {
 }
 
 export function AdminEmailEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2153,6 +2199,7 @@ export function AdminEmailEditor() {
 }
 
 export function AdminStorageEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2179,6 +2226,7 @@ export function AdminStorageEditor() {
 }
 
 export function AdminSecurityEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2205,6 +2253,7 @@ export function AdminSecurityEditor() {
 }
 
 export function AdminCourseEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2231,6 +2280,7 @@ export function AdminCourseEditor() {
 }
 
 export function AdminSystemEditor() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2257,6 +2307,7 @@ export function AdminSystemEditor() {
 }
 
 export function AdminFaqManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2283,6 +2334,7 @@ export function AdminFaqManager() {
 }
 
 export function AdminCategoryManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2309,6 +2361,7 @@ export function AdminCategoryManager() {
 }
 
 export function AdminBannerManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2335,6 +2388,7 @@ export function AdminBannerManager() {
 }
 
 export function AdminHomeManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2361,6 +2415,7 @@ export function AdminHomeManager() {
 }
 
 export function AdminTrashManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2387,6 +2442,7 @@ export function AdminTrashManager() {
 }
 
 export function AdminLogManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2413,6 +2469,7 @@ export function AdminLogManager() {
 }
 
 export function AdminSettingsManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2439,6 +2496,7 @@ export function AdminSettingsManager() {
 }
 
 export function AdminBrandManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2465,6 +2523,7 @@ export function AdminBrandManager() {
 }
 
 export function AdminUserManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2491,6 +2550,7 @@ export function AdminUserManager() {
 }
 
 export function AdminRoleManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2517,6 +2577,7 @@ export function AdminRoleManager() {
 }
 
 export function AdminPermissionManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2543,6 +2604,7 @@ export function AdminPermissionManager() {
 }
 
 export function AdminNotificationManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2569,6 +2631,7 @@ export function AdminNotificationManager() {
 }
 
 export function AdminAnnouncementManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2595,6 +2658,7 @@ export function AdminAnnouncementManager() {
 }
 
 export function AdminTemplateManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2621,6 +2685,7 @@ export function AdminTemplateManager() {
 }
 
 export function AdminEmailManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2647,6 +2712,7 @@ export function AdminEmailManager() {
 }
 
 export function AdminStorageManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2673,6 +2739,7 @@ export function AdminStorageManager() {
 }
 
 export function AdminSecurityManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2699,6 +2766,7 @@ export function AdminSecurityManager() {
 }
 
 export function AdminCourseManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2725,6 +2793,7 @@ export function AdminCourseManager() {
 }
 
 export function AdminSystemManager() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2751,6 +2820,7 @@ export function AdminSystemManager() {
 }
 
 export function AdminFaqAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2777,6 +2847,7 @@ export function AdminFaqAdmin() {
 }
 
 export function AdminCategoryAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2803,6 +2874,7 @@ export function AdminCategoryAdmin() {
 }
 
 export function AdminBannerAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2829,6 +2901,7 @@ export function AdminBannerAdmin() {
 }
 
 export function AdminHomeAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2855,6 +2928,7 @@ export function AdminHomeAdmin() {
 }
 
 export function AdminTrashAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2881,6 +2955,7 @@ export function AdminTrashAdmin() {
 }
 
 export function AdminLogAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2907,6 +2982,7 @@ export function AdminLogAdmin() {
 }
 
 export function AdminSettingsAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2933,6 +3009,7 @@ export function AdminSettingsAdmin() {
 }
 
 export function AdminBrandAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2959,6 +3036,7 @@ export function AdminBrandAdmin() {
 }
 
 export function AdminUserAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -2985,6 +3063,7 @@ export function AdminUserAdmin() {
 }
 
 export function AdminRoleAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -3011,6 +3090,7 @@ export function AdminRoleAdmin() {
 }
 
 export function AdminPermissionAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -3037,6 +3117,7 @@ export function AdminPermissionAdmin() {
 }
 
 export function AdminNotificationAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -3063,6 +3144,7 @@ export function AdminNotificationAdmin() {
 }
 
 export function AdminAnnouncementAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -3089,6 +3171,7 @@ export function AdminAnnouncementAdmin() {
 }
 
 export function AdminTemplateAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -3115,6 +3198,7 @@ export function AdminTemplateAdmin() {
 }
 
 export function AdminEmailAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -3141,6 +3225,7 @@ export function AdminEmailAdmin() {
 }
 
 export function AdminStorageAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -3167,6 +3252,7 @@ export function AdminStorageAdmin() {
 }
 
 export function AdminSecurityAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -3193,6 +3279,7 @@ export function AdminSecurityAdmin() {
 }
 
 export function AdminCourseAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -3219,6 +3306,7 @@ export function AdminCourseAdmin() {
 }
 
 export function AdminSystemAdmin() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

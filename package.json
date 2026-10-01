@@ -3,16 +3,24 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
+    "preinstall": "node scripts/check-package-manager.cjs",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
-    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
+    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
+    "test:netlify": "node scripts/test-netlify.mjs",
+    "build:netlify": "pnpm run typecheck:libs && pnpm --filter @workspace/nativos-academy run typecheck && pnpm --filter @workspace/nativos-academy run build && node scripts/build-netlify.mjs"
   },
   "private": true,
   "dependencies": {
-    "@replit/connectors-sdk": "^0.4.3"
+    "@clerk/backend": "^3.21.0",
+    "@replit/connectors-sdk": "^0.4.3",
+    "@workspace/db": "workspace:*",
+    "drizzle-orm": "catalog:",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "esbuild": "0.28.2",
     "prettier": "^3.9.6",
     "typescript": "~5.9.3"
   }

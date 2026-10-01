@@ -1,8 +1,10 @@
+import { useAdminFetch } from '@/lib/admin-fetch';
 import { useState, useEffect } from 'react';
-import { AdminLayout, AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminModal, AdminInput, AdminSelect, AdminTextarea, AdminSearchInput, AdminFilterSelect, AdminPagination, AdminConfirmDialog, AdminToast, AdminMediaCard, AdminImageUpload } from '../../components/admin-ui';
-import { Plus, Search, Filter, Download, RefreshCw, Eye, Edit, Trash2, Copy, MoreVertical, Image, Video, FileText, Upload, FolderOpen, Grid, List, SortAsc, SortDesc, ArrowUpDown, SlidersHorizontal, Settings, Database, HardDrive, Server, Wifi, Shield, Key, UserCheck, UserX, UserPlus, Users as UsersIcon, GraduationCap, Award, Bell, MessageSquare, Send, Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Youtube, Linkedin, Github, MessageCircle, MessageSquareDashed, MessageSquareOff, MessageSquarePlus, MessageSquareShare, MessageSquareReply, MessageSquareWarning, MessageSquareX, MessageSquareLock, MessageSquareHeart, MessageSquareStar, MessageSquareFlag, MessageSquareBookmark, MessageSquareTag, MessageSquareLink, MessageSquareExternal, MessageSquareCopy, MessageSquareCheck, MessageSquareEdit, MessageSquareTrash, MessageSquareArchive, MessageSquareRestore, MessageSquareDownload, MessageSquareUpload, MessageSquareSync, MessageSquareRefresh, MessageSquareHistory, MessageSquareVersion, MessageSquareDiff, MessageSquareCompare, MessageSquareMerge, MessageSquareSplit, MessageSquareJoin, MessageSquareGroup, MessageSquareUngroup, MessageSquareSort, MessageSquareFilter, MessageSquareSearch, MessageSquareFind, MessageSquareReplace, MessageSquareSwap, MessageSquareExchange, MessageSquareTransfer, MessageSquareShare2, MessageSquareLock2, MessageSquareUnlock, MessageSquareKey2, MessageSquareShield, MessageSquareShieldCheck, MessageSquareShieldX, MessageSquareShieldAlert, MessageSquareShieldQuestion, MessageSquareShieldPlus, MessageSquareShieldMinus, MessageSquareShieldEdit, MessageSquareShieldTrash, MessageSquareShieldArchive, MessageSquareShieldRestore, MessageSquareShieldDownload, MessageSquareShieldUpload, MessageSquareShieldSync, MessageSquareShieldRefresh, MessageSquareShieldHistory, MessageSquareShieldVersion, MessageSquareShieldDiff, MessageSquareShieldCompare, MessageSquareShieldMerge, MessageSquareShieldSplit, MessageSquareShieldJoin, MessageSquareShieldGroup, MessageSquareShieldUngroup, MessageSquareShieldSort, MessageSquareShieldFilter, MessageSquareShieldSearch, MessageSquareShieldFind, MessageSquareShieldReplace, MessageSquareShieldSwap, MessageSquareShieldExchange, MessageSquareShieldTransfer, MessageSquareShieldShare, MessageSquareShare2 as MessageSquareShare2Icon } from 'lucide-react';
+import { AdminPageHeader, AdminButton, AdminLoading, AdminEmptyState, AdminModal, AdminSelect, AdminSearchInput, AdminFilterSelect, AdminPagination, AdminConfirmDialog, AdminToast, AdminMediaCard, AdminImageUpload } from '../../components/admin-ui';
+import { Plus, Download, Image, Upload } from 'lucide-react';
 
 export function AdminMediaLibrary() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [media, setMedia] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -26,8 +28,8 @@ export function AdminMediaLibrary() {
     if (search) params.set('search', search);
     if (type !== 'all') params.set('type', type);
     
-    fetch(`/api/admin/media?${params}`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch(`/api/admin/media?${params}`, {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setMedia(data.media || []); setTotal(data.total || 0); setLoading(false); })
@@ -37,9 +39,9 @@ export function AdminMediaLibrary() {
   useEffect(() => { fetchMedia(); }, [page, search, type]);
 
   const handleUpload = () => {
-    fetch('/api/admin/media', {
+    adminFetch('/api/admin/media', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(res => res.json())
@@ -49,9 +51,9 @@ export function AdminMediaLibrary() {
 
   const handleDelete = () => {
     if (!selectedMedia) return;
-    fetch(`/api/admin/media/${selectedMedia.id}`, {
+    adminFetch(`/api/admin/media/${selectedMedia.id}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: {  },
     })
       .then(() => { setShowDelete(false); setToast('Arquivo excluído!'); fetchMedia(); })
       .catch(() => setToast('Erro ao excluir'));

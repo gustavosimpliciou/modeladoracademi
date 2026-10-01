@@ -47,3 +47,10 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Local task artifacts and bundled Netlify functions
+work/
+netlify/dist-functions/
+.env
+.env.*
+!.env.example

@@ -1,8 +1,10 @@
+import { useAdminFetch } from '@/lib/admin-fetch';
 import { useState, useEffect } from 'react';
-import { AdminLayout, AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminInput, AdminSelect, AdminTextarea, AdminToggle, AdminColorPicker, AdminImageUpload, AdminTabs, AdminToast, AdminHomeSectionCard } from '../../components/admin-ui';
-import { Palette, LayoutDashboard, Image, Type, Link2, Bell, MessageSquare, Send, Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Youtube, Linkedin, Github, MessageCircle, MessageSquareDashed, MessageSquareOff, MessageSquarePlus, MessageSquareShare, MessageSquareReply, MessageSquareWarning, MessageSquareX, MessageSquareLock, MessageSquareHeart, MessageSquareStar, MessageSquareFlag, MessageSquareBookmark, MessageSquareTag, MessageSquareLink, MessageSquareExternal, MessageSquareCopy, MessageSquareCheck, MessageSquareEdit, MessageSquareTrash, MessageSquareArchive, MessageSquareRestore, MessageSquareDownload, MessageSquareUpload, MessageSquareSync, MessageSquareRefresh, MessageSquareHistory, MessageSquareVersion, MessageSquareDiff, MessageSquareCompare, MessageSquareMerge, MessageSquareSplit, MessageSquareJoin, MessageSquareGroup, MessageSquareUngroup, MessageSquareSort, MessageSquareFilter, MessageSquareSearch, MessageSquareFind, MessageSquareReplace, MessageSquareSwap, MessageSquareExchange, MessageSquareTransfer, MessageSquareShare2, MessageSquareLock2, MessageSquareUnlock, MessageSquareKey2, MessageSquareShield, MessageSquareShieldCheck, MessageSquareShieldX, MessageSquareShieldAlert, MessageSquareShieldQuestion, MessageSquareShieldPlus, MessageSquareShieldMinus, MessageSquareShieldEdit, MessageSquareShieldTrash, MessageSquareShieldArchive, MessageSquareShieldRestore, MessageSquareShieldDownload, MessageSquareShieldUpload, MessageSquareShieldSync, MessageSquareShieldRefresh, MessageSquareShieldHistory, MessageSquareShieldVersion, MessageSquareShieldDiff, MessageSquareShieldCompare, MessageSquareShieldMerge, MessageSquareShieldSplit, MessageSquareShieldJoin, MessageSquareShieldGroup, MessageSquareShieldUngroup, MessageSquareShieldSort, MessageSquareShieldFilter, MessageSquareShieldSearch, MessageSquareShieldFind, MessageSquareShieldReplace, MessageSquareShieldSwap, MessageSquareShieldExchange, MessageSquareShieldTransfer, MessageSquareShieldShare, MessageSquareShare2 as MessageSquareShare2Icon } from 'lucide-react';
+import { AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminInput, AdminTextarea, AdminToggle, AdminImageUpload, AdminTabs, AdminToast, AdminHomeSectionCard } from '../../components/admin-ui';
+import { Palette, LayoutDashboard, Image, MessageSquare } from 'lucide-react';
 
 export function AdminPersonalization() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
   const [toast, setToast] = useState<string | null>(null);
@@ -17,8 +19,8 @@ export function AdminPersonalization() {
   });
 
   useEffect(() => {
-    fetch('/api/admin/settings', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/settings', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setHomeSections(data.homeSections || []); setLoading(false); })
@@ -26,9 +28,9 @@ export function AdminPersonalization() {
   }, []);
 
   const handleSave = () => {
-    fetch('/api/admin/settings', {
+    adminFetch('/api/admin/settings', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify({ key: 'hero', value: heroSection, type: 'object', category: 'home', label: 'Seção Hero' }),
     })
       .then(() => setToast('Configurações salvas!'))

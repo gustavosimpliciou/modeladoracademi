@@ -1,3 +1,7 @@
+import { AdminAccess } from '@/components/admin-access';
+import { AdminLogs } from '@/pages/admin/logs';
+import { AdminPersonalization } from '@/pages/admin/personalization';
+import { AdminInstructors } from '@/pages/admin/instructors';
 import { useEffect, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ClerkProvider, RedirectToSignIn, Show, SignIn, SignUp, useAuth, useClerk } from '@clerk/react';
@@ -49,7 +53,7 @@ const queryClient = new QueryClient({
   },
 });
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
-const clerkPubKey = publishableKeyFromHost(
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || publishableKeyFromHost(
   window.location.hostname,
   import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
 );
@@ -155,15 +159,18 @@ function Router() {
         <Route path="/sign-up/*?" component={SignUpPage} />
         
         {/* Admin Routes */}
-        <Route path="/admin"><Protected><AdminDashboard /></Protected></Route>
-        <Route path="/admin/cursos"><Protected><AdminCourses /></Protected></Route>
-        <Route path="/admin/construtor"><Protected><AdminCourseBuilder /></Protected></Route>
-        <Route path="/admin/midia"><Protected><AdminMediaLibrary /></Protected></Route>
-        <Route path="/admin/alunos"><Protected><AdminStudents /></Protected></Route>
-        <Route path="/admin/quizzes"><Protected><AdminQuizzes /></Protected></Route>
-        <Route path="/admin/analytics"><Protected><AdminAnalytics /></Protected></Route>
-        <Route path="/admin/configuracoes"><Protected><AdminSettings /></Protected></Route>
+        <Route path="/admin"><Protected><AdminAccess><AdminDashboard /></AdminAccess></Protected></Route>
+        <Route path="/admin/cursos"><Protected><AdminAccess><AdminCourses /></AdminAccess></Protected></Route>
+        <Route path="/admin/construtor"><Protected><AdminAccess><AdminCourseBuilder /></AdminAccess></Protected></Route>
+        <Route path="/admin/midia"><Protected><AdminAccess><AdminMediaLibrary /></AdminAccess></Protected></Route>
+        <Route path="/admin/alunos"><Protected><AdminAccess><AdminStudents /></AdminAccess></Protected></Route>
+        <Route path="/admin/quizzes"><Protected><AdminAccess><AdminQuizzes /></AdminAccess></Protected></Route>
+        <Route path="/admin/analytics"><Protected><AdminAccess><AdminAnalytics /></AdminAccess></Protected></Route>
+        <Route path="/admin/configuracoes"><Protected><AdminAccess><AdminSettings /></AdminAccess></Protected></Route>
         
+        <Route path="/admin/logs"><Protected><AdminAccess><AdminLogs /></AdminAccess></Protected></Route>
+        <Route path="/admin/personalizacao"><Protected><AdminAccess><AdminPersonalization /></AdminAccess></Protected></Route>
+        <Route path="/admin/instrutores"><Protected><AdminAccess><AdminInstructors /></AdminAccess></Protected></Route>
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>

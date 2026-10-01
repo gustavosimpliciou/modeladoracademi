@@ -1,13 +1,14 @@
 [build]
   base = "."
-  command = "pnpm install --ignore-scripts --frozen-lockfile && pnpm --filter @workspace/nativos-academy run build"
+  command = "pnpm install --ignore-scripts --frozen-lockfile && pnpm run build:netlify && node scripts/migrate-netlify.mjs"
   publish = "artifacts/nativos-academy/dist/public"
 
 [build.environment]
   NODE_VERSION = "22"
+  PNPM_VERSION = "10.30.3"
 
 [functions]
-  directory = "netlify/functions"
+  directory = "netlify/dist-functions"
 
 [[redirects]]
   from = "/api/healthz"
@@ -31,17 +32,17 @@
 
 [[redirects]]
   from = "/api/courses/:courseId"
-  to = "/.netlify/functions/courses-courseId"
+  to = "/.netlify/functions/courses-courseId?courseId=:courseId"
   status = 200
 
 [[redirects]]
   from = "/api/courses/:courseId/lessons/:lessonId"
-  to = "/.netlify/functions/courses-courseId-lessons-lessonId"
+  to = "/.netlify/functions/courses-courseId-lessons-lessonId?courseId=:courseId&lessonId=:lessonId"
   status = 200
 
 [[redirects]]
   from = "/api/progress/:lessonId"
-  to = "/.netlify/functions/progress-lessonId"
+  to = "/.netlify/functions/progress-lessonId?lessonId=:lessonId"
   status = 200
 
 [[redirects]]

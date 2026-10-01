@@ -1,3 +1,4 @@
+import { useAdminSession } from '@/lib/admin-session';
 import { useState, type ReactNode, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import {
@@ -11,28 +12,16 @@ const adminNav = [
   { section: 'Conteúdo' },
   { href: '/admin/cursos', label: 'Cursos', icon: BookOpen },
   { href: '/admin/construtor', label: 'Construtor de Cursos', icon: Layers },
-  { href: '/admin/modulos', label: 'Módulos', icon: FolderOpen },
-  { href: '/admin/aulas', label: 'Aulas', icon: Play },
-  { href: '/admin/videos', label: 'Vídeos', icon: Video },
   { href: '/admin/midia', label: 'Biblioteca de Mídia', icon: Image },
   { section: 'Avaliação' },
-  { href: '/admin/atividades', label: 'Atividades', icon: ClipboardList },
-  { href: '/admin/provas', label: 'Provas', icon: FileText },
   { href: '/admin/quizzes', label: 'Quizzes', icon: HelpCircle },
-  { href: '/admin/banco-questoes', label: 'Banco de Questões', icon: Database },
   { section: 'Pessoas' },
   { href: '/admin/alunos', label: 'Alunos', icon: Users },
   { href: '/admin/instrutores', label: 'Instrutores', icon: GraduationCap },
-  { href: '/admin/usuarios', label: 'Usuários', icon: Shield },
   { section: 'Engajamento' },
-  { href: '/admin/certificados', label: 'Certificados', icon: Award },
-  { href: '/admin/notificacoes', label: 'Notificações', icon: Bell },
-  { href: '/admin/banners', label: 'Banners', icon: Image },
-  { href: '/admin/categorias', label: 'Categorias', icon: Tag },
   { section: 'Dados' },
   { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/admin/logs', label: 'Logs', icon: ScrollText },
-  { href: '/admin/lixeira', label: 'Lixeira', icon: Trash2 },
   { section: 'Sistema' },
   { href: '/admin/personalizacao', label: 'Personalização', icon: Palette },
   { href: '/admin/configuracoes', label: 'Configurações', icon: Settings },
@@ -43,6 +32,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { signOut, user } = useClerk();
+  const session = useAdminSession();
 
   const isActive = (href: string) => {
     if (href === '/admin') return location === '/admin';
@@ -50,7 +40,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
   };
 
   const handleSignOut = async () => {
-    await signOut({ redirectUrl: '/sign-in' });
+    await signOut({ redirectUrl: `${import.meta.env.BASE_URL}sign-in` });
   };
 
   return (
@@ -78,7 +68,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
 
           <nav className="flex-1 overflow-y-auto px-3 py-4">
             {adminNav.map((item, index) => {
-              if (item.section) {
+              if (item.section !== undefined) {
                 return (
                   <div key={index} className="mb-2 mt-4 first:mt-0">
                     <span className="block px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] text-gray-500">
@@ -87,6 +77,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
                   </div>
                 );
               }
+              if (!item.href || !item.icon) return null;
               const Icon = item.icon;
               const active = isActive(item.href);
               return (
@@ -108,11 +99,11 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             <div className="relative">
               <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex w-full items-center gap-3 rounded-lg px-2 py-2 hover:bg-[#1a1a1a]">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#ff6a00]/20 text-[#ff6a00]">
-                  <span className="text-sm font-bold">{user?.firstName?.[0] || user?.emailAddress?.[0] || 'U'}</span>
+                  <span className="text-sm font-bold">{user?.firstName?.[0] || user?.primaryEmailAddress?.emailAddress?.[0] || 'U'}</span>
                 </div>
                 <div className="min-w-0 flex-1 text-left">
-                  <span className="block truncate text-sm font-medium text-white">{user?.firstName || user?.emailAddress || 'Admin'}</span>
-                  <span className="block text-[11px] text-gray-500">SUPER_ADMIN</span>
+                  <span className="block truncate text-sm font-medium text-white">{user?.firstName || user?.primaryEmailAddress?.emailAddress || 'Admin'}</span>
+                  <span className="block text-[11px] text-gray-500">{session?.roles.join(", ") || "Admin"}</span>
                 </div>
                 <ChevronDown size={14} className={`text-gray-500 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -285,8 +276,8 @@ export function AdminBadge({ children, variant = 'default' }: { children: ReactN
   return <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium ${variants[variant]}`}>{children}</span>;
 }
 
-export function AdminToggle({ checked, onChange, label }: { checked: boolean; onChange: (checked: boolean) => void; label?: string; }) {
-  return <label className="flex cursor-pointer items-center gap-3"><div onClick={() => onChange(!checked)} className={`relative h-6 w-11 rounded-full transition-colors ${checked ? 'bg-[#ff6a00]' : 'bg-[#333]'}`}><div className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-0.5'}`} /></div>{label && <span className="text-sm text-gray-300">{label}</span>}</label>;
+export function AdminToggle({ checked, onChange, label, description }: { checked: boolean; onChange: (checked: boolean) => void; label?: string; description?: string; }) {
+  return <label className="flex cursor-pointer items-center gap-3"><div onClick={() => onChange(!checked)} className={`relative h-6 w-11 rounded-full transition-colors ${checked ? 'bg-[#ff6a00]' : 'bg-[#333]'}`}><div className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-[22px]' : 'translate-x-0.5'}`} /></div>{description && <span className="text-xs text-gray-500">{description}</span>}{label && <span className="text-sm text-gray-300">{label}</span>}</label>;
 }
 
 export function AdminProgressBar({ value, max = 100, label }: { value: number; max?: number; label?: string; }) {
@@ -306,7 +297,7 @@ export function AdminUserAvatar({ name, imageUrl, size = 'md' }: { name: string;
 }
 
 export function AdminCourseCard({ course, onEdit, onDelete, onDuplicate, onPublish }: { course: any; onEdit?: () => void; onDelete?: () => void; onDuplicate?: () => void; onPublish?: () => void; }) {
-  const statusColors = { draft: 'warning', published: 'success', archived: 'default' };
+  const statusColors = { draft: 'warning', published: 'success', archived: 'default' } as const;
   return (
     <AdminCard className="overflow-hidden">
       <div className="relative h-40">{course.thumbnail ? <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center bg-[#1a1a1a]"><BookOpen size={32} className="text-gray-600" /></div>}<div className="absolute right-3 top-3"><AdminBadge variant={statusColors[course.status as keyof typeof statusColors] || 'default'}>{course.status}</AdminBadge></div></div>
@@ -324,7 +315,7 @@ export function AdminModuleCard({ module, onEdit, onDelete, onAddLesson }: { mod
 }
 
 export function AdminLessonCard({ lesson, onEdit, onDelete, onPreview }: { lesson: any; onEdit?: () => void; onDelete?: () => void; onPreview?: () => void; }) {
-  const statusColors = { completed: 'success', in_progress: 'warning', available: 'info', locked: 'default' };
+  const statusColors = { completed: 'success', in_progress: 'warning', available: 'info', locked: 'default' } as const;
   return (
     <AdminCard className="p-4">
       <div className="flex items-start justify-between"><div className="flex items-start gap-3"><div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1a1a1a]"><Play size={14} className="text-gray-400" /></div><div><h4 className="font-medium text-white">{lesson.title}</h4><p className="mt-0.5 line-clamp-1 text-sm text-gray-500">{lesson.description}</p><div className="mt-2 flex items-center gap-3"><AdminBadge variant={statusColors[lesson.status as keyof typeof statusColors] || 'default'}>{lesson.status}</AdminBadge><span className="text-xs text-gray-500">{lesson.duration}</span><span className="text-xs text-gray-500">{lesson.type}</span></div></div></div><div className="flex items-center gap-1">{onPreview && <button onClick={onPreview} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Eye size={16} /></button>}{onEdit && <button onClick={onEdit} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Edit size={16} /></button>}{onDelete && <button onClick={onDelete} className="rounded-lg p-2 text-gray-400 hover:bg-red-500/10 hover:text-red-400"><Trash2 size={16} /></button>}</div></div>
@@ -365,7 +356,7 @@ export function AdminCertificateCard({ certificate, onView, onRevoke, onDownload
 }
 
 export function AdminNotificationCard({ notification, onView, onDelete }: { notification: any; onView?: () => void; onDelete?: () => void; }) {
-  const typeColors = { info: 'info', warning: 'warning', news: 'info', course: 'success', quiz: 'warning', certificate: 'success' };
+  const typeColors = { info: 'info', warning: 'warning', news: 'info', course: 'success', quiz: 'warning', certificate: 'success' } as const;
   return (
     <AdminCard className="p-4">
       <div className="flex items-start justify-between"><div className="flex items-start gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1a1a1a]"><Bell size={20} className="text-gray-400" /></div><div><h4 className="font-medium text-white">{notification.title}</h4><p className="mt-0.5 line-clamp-2 text-sm text-gray-500">{notification.message}</p><div className="mt-2 flex items-center gap-3"><AdminBadge variant={typeColors[notification.type as keyof typeof typeColors] || 'default'}>{notification.type}</AdminBadge><span className="text-xs text-gray-500">{notification.createdAt ? new Date(notification.createdAt).toLocaleDateString('pt-BR') : '-'}</span></div></div></div><div className="flex items-center gap-1">{onView && <button onClick={onView} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Eye size={16} /></button>}{onDelete && <button onClick={onDelete} className="rounded-lg p-2 text-gray-400 hover:bg-red-500/10 hover:text-red-400"><Trash2 size={16} /></button>}</div></div>
@@ -391,7 +382,7 @@ export function AdminCategoryCard({ category, onEdit, onDelete, onToggle }: { ca
 }
 
 export function AdminLogCard({ log }: { log: any }) {
-  const actionColors = { create: 'success', update: 'info', delete: 'danger', publish: 'success', unpublish: 'warning', duplicate: 'info', upload: 'success', login: 'info', logout: 'default' };
+  const actionColors = { create: 'success', update: 'info', delete: 'danger', publish: 'success', unpublish: 'warning', duplicate: 'info', upload: 'success', login: 'info', logout: 'default' } as const;
   return (
     <AdminCard className="p-4">
       <div className="flex items-start gap-3"><div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1a1a1a]"><Activity size={16} className="text-gray-400" /></div><div className="flex-1"><div className="flex items-center gap-2"><span className="font-medium text-white">{log.userName || 'Sistema'}</span><AdminBadge variant={actionColors[log.action as keyof typeof actionColors] || 'default'}>{log.action}</AdminBadge></div><p className="mt-1 text-sm text-gray-400">{log.action} {log.resourceType} {log.resourceId && <code className="text-xs text-gray-500">#{log.resourceId}</code>}</p><p className="mt-1 text-xs text-gray-600">{log.createdAt ? new Date(log.createdAt).toLocaleString('pt-BR') : '-'}</p></div></div>
@@ -409,7 +400,7 @@ export function AdminMediaCard({ media, onView, onDelete, onCopy }: { media: any
 }
 
 export function AdminSubmissionCard({ submission, onView, onGrade, onDelete }: { submission: any; onView?: () => void; onGrade?: () => void; onDelete?: () => void; }) {
-  const statusColors = { submitted: 'warning', graded: 'success', returned: 'danger' };
+  const statusColors = { submitted: 'warning', graded: 'success', returned: 'danger' } as const;
   return (
     <AdminCard className="p-4">
       <div className="flex items-start justify-between"><div className="flex items-start gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1a1a1a]"><Upload size={20} className="text-gray-400" /></div><div><h4 className="font-medium text-white">{submission.userName || 'Aluno'}</h4><p className="mt-0.5 text-sm text-gray-500">{submission.assignmentTitle || 'Atividade'}</p><div className="mt-2 flex items-center gap-3"><AdminBadge variant={statusColors[submission.status as keyof typeof statusColors] || 'default'}>{submission.status}</AdminBadge>{submission.score !== null && submission.score !== undefined && <span className="text-xs text-gray-500">Nota: {submission.score}/{submission.maxScore || 100}</span>}<span className="text-xs text-gray-500">{submission.submittedAt ? new Date(submission.submittedAt).toLocaleDateString('pt-BR') : '-'}</span></div></div></div><div className="flex items-center gap-1">{onView && <button onClick={onView} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Eye size={16} /></button>}{onGrade && <button onClick={onGrade} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Edit size={16} /></button>}{onDelete && <button onClick={onDelete} className="rounded-lg p-2 text-gray-400 hover:bg-red-500/10 hover:text-red-400"><Trash2 size={16} /></button>}</div></div>
@@ -418,7 +409,7 @@ export function AdminSubmissionCard({ submission, onView, onGrade, onDelete }: {
 }
 
 export function AdminQuizAttemptCard({ attempt, onView, onGrade }: { attempt: any; onView?: () => void; onGrade?: () => void; }) {
-  const statusColors = { in_progress: 'warning', completed: 'success', graded: 'success', failed: 'danger' };
+  const statusColors = { in_progress: 'warning', completed: 'success', graded: 'success', failed: 'danger' } as const;
   return (
     <AdminCard className="p-4">
       <div className="flex items-start justify-between"><div className="flex items-start gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1a1a1a]"><HelpCircle size={20} className="text-gray-400" /></div><div><h4 className="font-medium text-white">{attempt.userName || 'Aluno'}</h4><p className="mt-0.5 text-sm text-gray-500">{attempt.quizTitle || 'Quiz'}</p><div className="mt-2 flex items-center gap-3"><AdminBadge variant={statusColors[attempt.status as keyof typeof statusColors] || 'default'}>{attempt.status}</AdminBadge>{attempt.percentage !== undefined && <span className="text-xs text-gray-500">{attempt.percentage.toFixed(0)}%</span>}<span className="text-xs text-gray-500">{attempt.startedAt ? new Date(attempt.startedAt).toLocaleDateString('pt-BR') : '-'}</span></div></div></div><div className="flex items-center gap-1">{onView && <button onClick={onView} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Eye size={16} /></button>}{onGrade && <button onClick={onGrade} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Edit size={16} /></button>}</div></div>
@@ -427,7 +418,7 @@ export function AdminQuizAttemptCard({ attempt, onView, onGrade }: { attempt: an
 }
 
 export function AdminEnrollmentCard({ enrollment, onView, onEdit, onDelete }: { enrollment: any; onView?: () => void; onEdit?: () => void; onDelete?: () => void; }) {
-  const statusColors = { active: 'success', completed: 'success', expired: 'warning', cancelled: 'danger', pending: 'warning' };
+  const statusColors = { active: 'success', completed: 'success', expired: 'warning', cancelled: 'danger', pending: 'warning' } as const;
   return (
     <AdminCard className="p-4">
       <div className="flex items-start justify-between"><div className="flex items-start gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1a1a1a]"><GraduationCap size={20} className="text-gray-400" /></div><div><h4 className="font-medium text-white">{enrollment.userName || 'Aluno'}</h4><p className="mt-0.5 text-sm text-gray-500">{enrollment.courseTitle || 'Curso'}</p><div className="mt-2 flex items-center gap-3"><AdminBadge variant={statusColors[enrollment.status as keyof typeof statusColors] || 'default'}>{enrollment.status}</AdminBadge><span className="text-xs text-gray-500">{enrollment.progress || 0}% completo</span><span className="text-xs text-gray-500">{enrollment.enrolledAt ? new Date(enrollment.enrolledAt).toLocaleDateString('pt-BR') : '-'}</span></div></div></div><div className="flex items-center gap-1">{onView && <button onClick={onView} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Eye size={16} /></button>}{onEdit && <button onClick={onEdit} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Edit size={16} /></button>}{onDelete && <button onClick={onDelete} className="rounded-lg p-2 text-gray-400 hover:bg-red-500/10 hover:text-red-400"><Trash2 size={16} /></button>}</div></div>
@@ -436,7 +427,7 @@ export function AdminEnrollmentCard({ enrollment, onView, onEdit, onDelete }: { 
 }
 
 export function AdminUserCard({ user, onView, onEdit, onBlock, onDelete }: { user: any; onView?: () => void; onEdit?: () => void; onBlock?: () => void; onDelete?: () => void; }) {
-  const roleColors = { SUPER_ADMIN: 'danger', ADMIN: 'warning', INSTRUCTOR: 'info', STUDENT: 'default' };
+  const roleColors = { SUPER_ADMIN: 'danger', ADMIN: 'warning', INSTRUCTOR: 'info', STUDENT: 'default' } as const;
   return (
     <AdminCard className="p-4">
       <div className="flex items-start justify-between"><div className="flex items-start gap-3"><AdminUserAvatar name={user.name} imageUrl={user.imageUrl} /><div><h4 className="font-medium text-white">{user.name}</h4><p className="mt-0.5 text-sm text-gray-500">{user.email}</p><div className="mt-2 flex items-center gap-3">{user.roleName && <AdminBadge variant={roleColors[user.roleName as keyof typeof roleColors] || 'default'}>{user.roleName}</AdminBadge>}<AdminStatusDot status={user.isActive ? 'active' : 'inactive'} /><span className="text-xs text-gray-500">{user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleDateString('pt-BR') : 'Nunca'}</span></div></div></div><div className="flex items-center gap-1">{onView && <button onClick={onView} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Eye size={16} /></button>}{onEdit && <button onClick={onEdit} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Edit size={16} /></button>}{onBlock && <button onClick={onBlock} className="rounded-lg p-2 text-gray-400 hover:bg-red-500/10 hover:text-red-400">{user.isActive ? <Lock size={16} /> : <Unlock size={16} />}</button>}{onDelete && <button onClick={onDelete} className="rounded-lg p-2 text-gray-400 hover:bg-red-500/10 hover:text-red-400"><Trash2 size={16} /></button>}</div></div>
@@ -445,7 +436,7 @@ export function AdminUserCard({ user, onView, onEdit, onBlock, onDelete }: { use
 }
 
 export function AdminRoleCard({ role, onEdit, onDelete, onAssign }: { role: any; onEdit?: () => void; onDelete?: () => void; onAssign?: () => void; }) {
-  const roleColors = { SUPER_ADMIN: 'danger', ADMIN: 'warning', INSTRUCTOR: 'info', STUDENT: 'default' };
+  const roleColors = { SUPER_ADMIN: 'danger', ADMIN: 'warning', INSTRUCTOR: 'info', STUDENT: 'default' } as const;
   return (
     <AdminCard className="p-4">
       <div className="flex items-start justify-between"><div className="flex items-start gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1a1a1a]"><Shield size={20} className="text-gray-400" /></div><div><h4 className="font-medium text-white">{role.name}</h4><p className="mt-0.5 text-sm text-gray-500">{role.description}</p><div className="mt-2 flex items-center gap-3"><AdminBadge variant={roleColors[role.name as keyof typeof roleColors] || 'default'}>{role.name}</AdminBadge><span className="text-xs text-gray-500">{role.permissions?.length || 0} permissões</span>{role.isSystem && <AdminBadge variant="warning">Sistema</AdminBadge>}</div></div></div><div className="flex items-center gap-1">{onAssign && <button onClick={onAssign} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Users size={16} /></button>}{onEdit && <button onClick={onEdit} className="rounded-lg p-2 text-gray-400 hover:bg-[#1a1a1a] hover:text-white"><Edit size={16} /></button>}{onDelete && !role.isSystem && <button onClick={onDelete} className="rounded-lg p-2 text-gray-400 hover:bg-red-500/10 hover:text-red-400"><Trash2 size={16} /></button>}</div></div>
@@ -494,7 +485,7 @@ export function AdminDragDropList({ items, onReorder, renderItem }: { items: any
   );
 }
 
-export function AdminQuickActions({ actions }: { actions: { label: string; icon: React.ComponentType<{ size?: number }>; onClick: () => void }[] }) {
+export function AdminQuickActions({ actions }: { actions: { label: string; icon: React.ComponentType<{ size?: number; className?: string }>; onClick: () => void }[] }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {actions.map((action, i) => {
@@ -510,7 +501,7 @@ export function AdminQuickActions({ actions }: { actions: { label: string; icon:
   );
 }
 
-export function AdminTaskList({ tasks }: { tasks: { id: string; label: string; count: number; icon: React.ComponentType<{ size?: number }>; onClick: () => void }[] }) {
+export function AdminTaskList({ tasks }: { tasks: { id: string; label: string; count: number; icon: React.ComponentType<{ size?: number; className?: string }>; onClick: () => void }[] }) {
   return (
     <AdminCard className="p-5">
       <h3 className="mb-4 font-display text-lg font-bold text-white">Você precisa revisar</h3>
@@ -998,6 +989,19 @@ export function AdminAnalyticsCursor({ children, cursor = 'auto' }: { children: 
   return <div style={{ cursor }}>{children}</div>;
 }
 
-export function AdminAnalyticsUserSelect({ children, userSelect = 'auto' }: { children: ReactNode; userSelect?: 'auto' | 'none' | 'text' | 'contain' | 'all'; }) {
+export function AdminAnalyticsUserSelect({ children, userSelect = 'auto' }: { children: ReactNode; userSelect?: 'auto' | 'none' | 'text' | 'all'; }) {
   return <div style={{ userSelect }}>{children}</div>;
 }
+export function AdminBrandSettingsCard({ brand, onEdit }: { brand: { platformName?: string; supportEmail?: string; websiteUrl?: string }; onEdit: () => void }) {
+ return <AdminCard className="p-6"><h3 className="font-bold">{brand.platformName}</h3><p>{brand.supportEmail}</p><p>{brand.websiteUrl}</p><AdminButton onClick={onEdit}>Editar marca</AdminButton></AdminCard>;
+}
+export function AdminHomeSectionCard({ section, onEdit, onDelete, onToggle }: { section: any; onEdit?: () => void; onDelete?: () => void; onToggle?: () => void }) {
+ return <AdminCard className="p-4"><h3>{section.title || section.type}</h3>{onToggle && <AdminButton onClick={onToggle}>{section.isActive ? "Desativar" : "Ativar"}</AdminButton>}<p>{section.description}</p>{onEdit && <AdminButton onClick={onEdit}>Editar</AdminButton>}{onDelete && <AdminButton variant="danger" onClick={onDelete}>Excluir</AdminButton>}</AdminCard>;
+}
+
+export function AdminAnnouncementCard({ announcement, onEdit, onDelete, onSend }: { announcement: any; onEdit?: () => void; onDelete?: () => void; onSend?: () => void }) { return <AdminCard className="p-4"><h3>{announcement.title}</h3><p>{announcement.message}</p>{onSend && <AdminButton onClick={onSend}>Enviar</AdminButton>}{onEdit && <AdminButton onClick={onEdit}>Editar</AdminButton>}{onDelete && <AdminButton variant="danger" onClick={onDelete}>Excluir</AdminButton>}</AdminCard>; }
+export function AdminVideoCard({ video, onEdit, onDelete, onView }: { video: any; onEdit?: () => void; onDelete?: () => void; onView?: () => void }) { return <AdminCard className="p-4"><h3>{video.title || video.fileName}</h3><p>{video.status}</p>{onView && <AdminButton onClick={onView}>Visualizar</AdminButton>}{onEdit && <AdminButton onClick={onEdit}>Editar</AdminButton>}{onDelete && <AdminButton variant="danger" onClick={onDelete}>Excluir</AdminButton>}</AdminCard>; }
+
+export function AdminNotificationTemplateCard({ template, onEdit, onDelete, onSend }: { template: any; onEdit?: () => void; onDelete?: () => void; onSend?: () => void }) { return <AdminCard className="p-4"><h3>{template.name || template.title}</h3><p>{template.message}</p>{onEdit && <AdminButton onClick={onEdit}>Editar</AdminButton>}{onDelete && <AdminButton variant="danger" onClick={onDelete}>Excluir</AdminButton>}{onSend && <AdminButton onClick={onSend}>Enviar</AdminButton>}</AdminCard>; }
+export function AdminQuestionBankCard({ question, onEdit, onDelete }: { question: any; onEdit?: () => void; onDelete?: () => void }) { return <AdminCard className="p-4"><h3>{question.question || question.title}</h3><p>{question.type}</p>{onEdit && <AdminButton onClick={onEdit}>Editar</AdminButton>}{onDelete && <AdminButton variant="danger" onClick={onDelete}>Excluir</AdminButton>}</AdminCard>; }
+export function AdminActivityCard({ activity, onEdit, onDelete }: { activity: any; onEdit?: () => void; onDelete?: () => void }) { return <AdminCard className="p-4"><h3>{activity.title}</h3><p>{activity.description}</p>{onEdit && <AdminButton onClick={onEdit}>Editar</AdminButton>}{onDelete && <AdminButton variant="danger" onClick={onDelete}>Excluir</AdminButton>}</AdminCard>; }

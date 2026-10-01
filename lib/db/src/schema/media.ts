@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, jsonb, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { type AnyPgColumn, pgTable, text, timestamp, integer, jsonb, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./rbac";
@@ -32,7 +32,7 @@ export const mediaTable = pgTable("media", {
 export const mediaFoldersTable = pgTable("media_folders", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
-  parentId: text("parent_id").references(() => mediaFoldersTable.id),
+  parentId: text("parent_id").references((): AnyPgColumn => mediaFoldersTable.id),
   path: text("path").notNull(),
   createdBy: text("created_by").references(() => usersTable.id),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

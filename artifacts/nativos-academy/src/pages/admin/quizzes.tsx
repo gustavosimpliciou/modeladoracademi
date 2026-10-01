@@ -1,8 +1,11 @@
+import { useAdminFetch } from '@/lib/admin-fetch';
+import { Save } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { AdminLayout, AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminTable, AdminBadge, AdminModal, AdminInput, AdminSelect, AdminTextarea, AdminSearchInput, AdminFilterSelect, AdminPagination, AdminConfirmDialog, AdminToast, AdminQuizCard, AdminQuizAttemptCard, AdminQuestionCard, AdminQuestionBankCard } from '../../components/admin-ui';
-import { Plus, Search, Filter, Download, RefreshCw, Eye, Edit, Trash2, Copy, MoreVertical, HelpCircle, FileText, ClipboardList, Database, CheckCircle, XCircle, AlertTriangle, Info, Clock, Users, Star, TrendingUp, Activity, Calendar, Target, Zap, Heart, ThumbsUp, ThumbsDown, Flag, Bookmark, Share2, Send, Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Youtube, Linkedin, Github, MessageSquare, Bell, Settings, LogOut, Menu, X, ChevronDown, ChevronUp, ArrowLeft, ArrowRight, GripVertical, Link2, Unlock, Lock, EyeOff, DollarSign, Percent, BarChart3, PieChart, LineChart, HardDrive, Server, Wifi, Shield, Key, UserCheck, UserX, UserPlus, Users as UsersIcon, GraduationCap, Award, MessageCircle, MessageSquareDashed, MessageSquareOff, MessageSquarePlus, MessageSquareShare, MessageSquareReply, MessageSquareWarning, MessageSquareX, MessageSquareLock, MessageSquareHeart, MessageSquareStar, MessageSquareFlag, MessageSquareBookmark, MessageSquareTag, MessageSquareLink, MessageSquareExternal, MessageSquareCopy, MessageSquareCheck, MessageSquareEdit, MessageSquareTrash, MessageSquareArchive, MessageSquareRestore, MessageSquareDownload, MessageSquareUpload, MessageSquareSync, MessageSquareRefresh, MessageSquareHistory, MessageSquareVersion, MessageSquareDiff, MessageSquareCompare, MessageSquareMerge, MessageSquareSplit, MessageSquareJoin, MessageSquareGroup, MessageSquareUngroup, MessageSquareSort, MessageSquareFilter, MessageSquareSearch, MessageSquareFind, MessageSquareReplace, MessageSquareSwap, MessageSquareExchange, MessageSquareTransfer, MessageSquareShare2, MessageSquareLock2, MessageSquareUnlock, MessageSquareKey2, MessageSquareShield, MessageSquareShieldCheck, MessageSquareShieldX, MessageSquareShieldAlert, MessageSquareShieldQuestion, MessageSquareShieldPlus, MessageSquareShieldMinus, MessageSquareShieldEdit, MessageSquareShieldTrash, MessageSquareShieldArchive, MessageSquareShieldRestore, MessageSquareShieldDownload, MessageSquareShieldUpload, MessageSquareShieldSync, MessageSquareShieldRefresh, MessageSquareShieldHistory, MessageSquareShieldVersion, MessageSquareShieldDiff, MessageSquareShieldCompare, MessageSquareShieldMerge, MessageSquareShieldSplit, MessageSquareShieldJoin, MessageSquareShieldGroup, MessageSquareShieldUngroup, MessageSquareShieldSort, MessageSquareShieldFilter, MessageSquareShieldSearch, MessageSquareShieldFind, MessageSquareShieldReplace, MessageSquareShieldSwap, MessageSquareShieldExchange, MessageSquareShieldTransfer, MessageSquareShieldShare, MessageSquareShare2 as MessageSquareShare2Icon } from 'lucide-react';
+import { AdminPageHeader, AdminButton, AdminLoading, AdminEmptyState, AdminModal, AdminInput, AdminSelect, AdminTextarea, AdminConfirmDialog, AdminToast, AdminQuizCard, AdminQuizAttemptCard } from '../../components/admin-ui';
+import { Plus, Download, HelpCircle, ClipboardList, Database } from 'lucide-react';
 
 export function AdminQuizzes() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [quizzes, setQuizzes] = useState<any[]>([]);
   const [attempts, setAttempts] = useState<any[]>([]);
@@ -30,8 +33,8 @@ export function AdminQuizzes() {
 
   const fetchQuizzes = () => {
     setLoading(true);
-    fetch('/api/admin/quizzes', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/quizzes', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setQuizzes(data.quizzes || []); setLoading(false); })
@@ -39,8 +42,8 @@ export function AdminQuizzes() {
   };
 
   const fetchAttempts = () => {
-    fetch('/api/admin/quiz-attempts', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/quiz-attempts', {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setAttempts(data.attempts || []); })
@@ -53,9 +56,9 @@ export function AdminQuizzes() {
   }, [activeTab]);
 
   const handleCreate = () => {
-    fetch('/api/admin/quizzes', {
+    adminFetch('/api/admin/quizzes', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(res => res.json())
@@ -65,9 +68,9 @@ export function AdminQuizzes() {
 
   const handleDelete = () => {
     if (!selectedQuiz) return;
-    fetch(`/api/admin/quizzes/${selectedQuiz.id}`, {
+    adminFetch(`/api/admin/quizzes/${selectedQuiz.id}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: {  },
     })
       .then(() => { setShowDelete(false); setToast('Quiz excluído!'); fetchQuizzes(); })
       .catch(() => setToast('Erro ao excluir'));

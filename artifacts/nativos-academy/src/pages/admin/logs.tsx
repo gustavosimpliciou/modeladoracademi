@@ -1,8 +1,10 @@
+import { useAdminFetch } from '@/lib/admin-fetch';
 import { useState, useEffect } from 'react';
-import { AdminLayout, AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminTable, AdminBadge, AdminSearchInput, AdminFilterSelect, AdminPagination, AdminLogCard, AdminSystemLogCard } from '../../components/admin-ui';
-import { ScrollText, Activity, AlertTriangle, Info, XCircle, CheckCircle, Clock, User, Settings, Database, HardDrive, Server, Wifi, Shield, Key, UserCheck, UserX, UserPlus, Users as UsersIcon, GraduationCap, Award, Bell, MessageSquare, Send, Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Youtube, Linkedin, Github, MessageCircle, MessageSquareDashed, MessageSquareOff, MessageSquarePlus, MessageSquareShare, MessageSquareReply, MessageSquareWarning, MessageSquareX, MessageSquareLock, MessageSquareHeart, MessageSquareStar, MessageSquareFlag, MessageSquareBookmark, MessageSquareTag, MessageSquareLink, MessageSquareExternal, MessageSquareCopy, MessageSquareCheck, MessageSquareEdit, MessageSquareTrash, MessageSquareArchive, MessageSquareRestore, MessageSquareDownload, MessageSquareUpload, MessageSquareSync, MessageSquareRefresh, MessageSquareHistory, MessageSquareVersion, MessageSquareDiff, MessageSquareCompare, MessageSquareMerge, MessageSquareSplit, MessageSquareJoin, MessageSquareGroup, MessageSquareUngroup, MessageSquareSort, MessageSquareFilter, MessageSquareSearch, MessageSquareFind, MessageSquareReplace, MessageSquareSwap, MessageSquareExchange, MessageSquareTransfer, MessageSquareShare2, MessageSquareLock2, MessageSquareUnlock, MessageSquareKey2, MessageSquareShield, MessageSquareShieldCheck, MessageSquareShieldX, MessageSquareShieldAlert, MessageSquareShieldQuestion, MessageSquareShieldPlus, MessageSquareShieldMinus, MessageSquareShieldEdit, MessageSquareShieldTrash, MessageSquareShieldArchive, MessageSquareShieldRestore, MessageSquareShieldDownload, MessageSquareShieldUpload, MessageSquareShieldSync, MessageSquareShieldRefresh, MessageSquareShieldHistory, MessageSquareShieldVersion, MessageSquareShieldDiff, MessageSquareShieldCompare, MessageSquareShieldMerge, MessageSquareShieldSplit, MessageSquareShieldJoin, MessageSquareShieldGroup, MessageSquareShieldUngroup, MessageSquareShieldSort, MessageSquareShieldFilter, MessageSquareShieldSearch, MessageSquareShieldFind, MessageSquareShieldReplace, MessageSquareShieldSwap, MessageSquareShieldExchange, MessageSquareShieldTransfer, MessageSquareShieldShare, MessageSquareShare2 as MessageSquareShare2Icon } from 'lucide-react';
+import { AdminPageHeader, AdminButton, AdminLoading, AdminEmptyState, AdminSearchInput, AdminFilterSelect, AdminPagination, AdminLogCard } from '../../components/admin-ui';
+import { ScrollText } from 'lucide-react';
 
 export function AdminLogs() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -15,8 +17,8 @@ export function AdminLogs() {
     const params = new URLSearchParams({ page: String(page), limit: '20' });
     if (action !== 'all') params.set('action', action);
     
-    fetch(`/api/admin/logs?${params}`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch(`/api/admin/logs?${params}`, {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setLogs(data.logs || []); setTotal(data.total || 0); setLoading(false); })

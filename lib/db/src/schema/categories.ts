@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, jsonb, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { type AnyPgColumn, pgTable, text, timestamp, integer, jsonb, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 import { usersTable } from "./rbac";
@@ -11,7 +11,7 @@ export const categoriesTable = pgTable("categories", {
   image: text("image"),
   icon: text("icon"),
   color: text("color").default("#ff6a00"),
-  parentId: text("parent_id").references(() => categoriesTable.id),
+  parentId: text("parent_id").references((): AnyPgColumn => categoriesTable.id),
   order: integer("order").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
   courseCount: integer("course_count").notNull().default(0),

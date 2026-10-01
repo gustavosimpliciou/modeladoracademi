@@ -1,8 +1,10 @@
+import { useAdminFetch } from '@/lib/admin-fetch';
 import { useState, useEffect } from 'react';
-import { AdminLayout, AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminTable, AdminBadge, AdminModal, AdminInput, AdminSelect, AdminTextarea, AdminSearchInput, AdminFilterSelect, AdminPagination, AdminConfirmDialog, AdminToast, AdminCourseCard } from '../../components/admin-ui';
-import { Plus, Search, Filter, Download, RefreshCw, Eye, Edit, Trash2, Copy, MoreVertical, BookOpen, Layers, Play, Users, Calendar, Clock, Star, TrendingUp, Activity, CheckCircle, XCircle, AlertTriangle, Info, ChevronLeft, ChevronRight, X, Save, Upload, Image, Video, FileText, Link2, Tag, FolderOpen, Grid, List, SortAsc, SortDesc, ArrowUpDown, SlidersHorizontal, Settings, Database, HardDrive, Server, Wifi, Shield, Key, UserCheck, UserX, UserPlus, Users as UsersIcon, GraduationCap, Award, Bell, MessageSquare, Send, Mail, Phone, MapPin, Globe, Facebook, Twitter, Instagram, Youtube, Linkedin, Github, MessageCircle, MessageSquare as MessageSquareIcon, MessageSquareDashed, MessageSquareOff, MessageSquarePlus, MessageSquareShare, MessageSquareReply, MessageSquareWarning, MessageSquareX, MessageSquareLock, MessageSquareHeart, MessageSquareStar, MessageSquareFlag, MessageSquareBookmark, MessageSquareTag, MessageSquareLink, MessageSquareExternal, MessageSquareCopy, MessageSquareCheck, MessageSquareEdit, MessageSquareTrash, MessageSquareArchive, MessageSquareRestore, MessageSquareDownload, MessageSquareUpload, MessageSquareSync, MessageSquareRefresh, MessageSquareHistory, MessageSquareVersion, MessageSquareDiff, MessageSquareCompare, MessageSquareMerge, MessageSquareSplit, MessageSquareJoin, MessageSquareGroup, MessageSquareUngroup, MessageSquareSort, MessageSquareFilter, MessageSquareSearch, MessageSquareFind, MessageSquareReplace, MessageSquareSwap, MessageSquareExchange, MessageSquareTransfer, MessageSquareShare2, MessageSquareLock2, MessageSquareUnlock, MessageSquareKey, MessageSquareShield, MessageSquareShieldCheck, MessageSquareShieldX, MessageSquareShieldAlert, MessageSquareShieldQuestion, MessageSquareShieldPlus, MessageSquareShieldMinus, MessageSquareShieldEdit, MessageSquareShieldTrash, MessageSquareShieldArchive, MessageSquareShieldRestore, MessageSquareShieldDownload, MessageSquareShieldUpload, MessageSquareShieldSync, MessageSquareShieldRefresh, MessageSquareShieldHistory, MessageSquareShieldVersion, MessageSquareShieldDiff, MessageSquareShieldCompare, MessageSquareShieldMerge, MessageSquareShieldSplit, MessageSquareShieldJoin, MessageSquareShieldGroup, MessageSquareShieldUngroup, MessageSquareShieldSort, MessageSquareShieldFilter, MessageSquareShieldSearch, MessageSquareShieldFind, MessageSquareShieldReplace, MessageSquareShieldSwap, MessageSquareShieldExchange, MessageSquareShieldTransfer, MessageSquareShieldShare, MessageSquareShieldShare2 as MessageSquareShare2Icon } from 'lucide-react';
+import { AdminPageHeader, AdminButton, AdminLoading, AdminEmptyState, AdminModal, AdminInput, AdminSelect, AdminTextarea, AdminSearchInput, AdminFilterSelect, AdminPagination, AdminConfirmDialog, AdminToast, AdminCourseCard } from '../../components/admin-ui';
+import { Plus, Download, BookOpen, Save } from 'lucide-react';
 
 export function AdminCourses() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -30,8 +32,8 @@ export function AdminCourses() {
     if (search) params.set('search', search);
     if (status !== 'all') params.set('status', status);
     
-    fetch(`/api/admin/courses?${params}`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch(`/api/admin/courses?${params}`, {
+      headers: {  }
     })
       .then(res => res.json())
       .then(data => { setCourses(data.courses || []); setTotal(data.total || 0); setLoading(false); })
@@ -41,30 +43,30 @@ export function AdminCourses() {
   useEffect(() => { fetchCourses(); }, [page, search, status]);
 
   const handleCreate = () => {
-    fetch('/api/admin/courses', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+    adminFetch(selectedCourse ? `/api/admin/courses/${selectedCourse.id}` : '/api/admin/courses', {
+      method: selectedCourse ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify(form),
     })
       .then(res => res.json())
-      .then(() => { setShowModal(false); setToast('Curso criado com sucesso!'); fetchCourses(); })
+      .then(() => { setShowModal(false); setToast(selectedCourse ? 'Curso atualizado com sucesso!' : 'Curso criado com sucesso!'); fetchCourses(); })
       .catch(() => setToast('Erro ao criar curso'));
   };
 
   const handleDelete = () => {
     if (!selectedCourse) return;
-    fetch(`/api/admin/courses/${selectedCourse.id}`, {
+    adminFetch(`/api/admin/courses/${selectedCourse.id}`, {
       method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: {  },
     })
       .then(() => { setShowDelete(false); setToast('Curso excluído!'); fetchCourses(); })
       .catch(() => setToast('Erro ao excluir'));
   };
 
   const handleDuplicate = (course: any) => {
-    fetch(`/api/admin/courses/${course.id}/duplicate`, {
+    adminFetch(`/api/admin/courses/${course.id}/duplicate`, {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: {  },
     })
       .then(() => { setToast('Curso duplicado!'); fetchCourses(); })
       .catch(() => setToast('Erro ao duplicar'));
@@ -72,9 +74,9 @@ export function AdminCourses() {
 
   const handlePublish = (course: any) => {
     const action = course.status === 'published' ? 'unpublish' : 'publish';
-    fetch(`/api/admin/courses/${course.id}/${action}`, {
+    adminFetch(`/api/admin/courses/${course.id}/${action}`, {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: {  },
     })
       .then(() => { setToast(`Curso ${action === 'publish' ? 'publicado' : 'despublicado'}!`); fetchCourses(); })
       .catch(() => setToast('Erro ao atualizar'));
@@ -90,7 +92,7 @@ export function AdminCourses() {
         actions={
           <>
             <AdminButton variant="secondary" icon={Download}>Exportar</AdminButton>
-            <AdminButton variant="primary" icon={Plus} onClick={() => setShowModal(true)}>Novo Curso</AdminButton>
+            <AdminButton variant="primary" icon={Plus} onClick={() => { setSelectedCourse(null); setForm({ title: "", slug: "", description: "", category: "", level: "Iniciante", duration: "", instructor: "", thumbnail: "" }); setShowModal(true); }}>Novo Curso</AdminButton>
           </>
         }
       />
@@ -126,7 +128,7 @@ export function AdminCourses() {
               <AdminCourseCard
                 key={course.id}
                 course={course}
-                onEdit={() => { setSelectedCourse(course); setForm(course); setShowModal(true); }}
+                onEdit={() => { setSelectedCourse(course); setForm({ title: course.title, slug: course.slug, description: course.description, category: course.category, level: course.level, duration: course.duration, instructor: course.instructor || "", thumbnail: course.thumbnail || "" }); setShowModal(true); }}
                 onDelete={() => { setSelectedCourse(course); setShowDelete(true); }}
                 onDuplicate={() => handleDuplicate(course)}
                 onPublish={() => handlePublish(course)}

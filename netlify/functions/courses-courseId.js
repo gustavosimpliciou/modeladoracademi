@@ -258,7 +258,7 @@ const mockCourses = {
   }
 };
 
-export default async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod === "OPTIONS") return handleOptions();
   
   const courseId = getQuery(event, "courseId");

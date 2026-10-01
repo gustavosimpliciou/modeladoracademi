@@ -1,6 +1,6 @@
 import { json, handleOptions, getQuery, getBody } from "./_utils.js";
 
-export default async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod === "OPTIONS") return handleOptions();
   if (event.httpMethod !== "PATCH") return json({ error: "Method not allowed" }, 405);
   

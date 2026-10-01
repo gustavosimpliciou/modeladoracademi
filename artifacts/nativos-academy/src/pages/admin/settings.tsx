@@ -1,8 +1,10 @@
+import { useAdminFetch } from '@/lib/admin-fetch';
 import { useState, useEffect } from 'react';
-import { AdminLayout, AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminInput, AdminSelect, AdminTextarea, AdminToggle, AdminColorPicker, AdminImageUpload, AdminTabs, AdminToast, AdminBrandSettingsCard, AdminSettingCard, AdminHomeSectionCard } from '../../components/admin-ui';
-import { Settings, Palette, Bell, Shield, Database, HardDrive, Server, Wifi, Key, UserCheck, UserX, UserPlus, Users as UsersIcon, GraduationCap, Award, MessageCircle, MessageSquareDashed, MessageSquareOff, MessageSquarePlus, MessageSquareShare, MessageSquareReply, MessageSquareWarning, MessageSquareX, MessageSquareLock, MessageSquareHeart, MessageSquareStar, MessageSquareFlag, MessageSquareBookmark, MessageSquareTag, MessageSquareLink, MessageSquareExternal, MessageSquareCopy, MessageSquareCheck, MessageSquareEdit, MessageSquareTrash, MessageSquareArchive, MessageSquareRestore, MessageSquareDownload, MessageSquareUpload, MessageSquareSync, MessageSquareRefresh, MessageSquareHistory, MessageSquareVersion, MessageSquareDiff, MessageSquareCompare, MessageSquareMerge, MessageSquareSplit, MessageSquareJoin, MessageSquareGroup, MessageSquareUngroup, MessageSquareSort, MessageSquareFilter, MessageSquareSearch, MessageSquareFind, MessageSquareReplace, MessageSquareSwap, MessageSquareExchange, MessageSquareTransfer, MessageSquareShare2, MessageSquareLock2, MessageSquareUnlock, MessageSquareKey2, MessageSquareShield, MessageSquareShieldCheck, MessageSquareShieldX, MessageSquareShieldAlert, MessageSquareShieldQuestion, MessageSquareShieldPlus, MessageSquareShieldMinus, MessageSquareShieldEdit, MessageSquareShieldTrash, MessageSquareShieldArchive, MessageSquareShieldRestore, MessageSquareShieldDownload, MessageSquareShieldUpload, MessageSquareShieldSync, MessageSquareShieldRefresh, MessageSquareShieldHistory, MessageSquareShieldVersion, MessageSquareShieldDiff, MessageSquareShieldCompare, MessageSquareShieldMerge, MessageSquareShieldSplit, MessageSquareShieldJoin, MessageSquareShieldGroup, MessageSquareShieldUngroup, MessageSquareShieldSort, MessageSquareShieldFilter, MessageSquareShieldSearch, MessageSquareShieldFind, MessageSquareShieldReplace, MessageSquareShieldSwap, MessageSquareShieldExchange, MessageSquareShieldTransfer, MessageSquareShieldShare, MessageSquareShare2 as MessageSquareShare2Icon } from 'lucide-react';
+import { AdminPageHeader, AdminCard, AdminButton, AdminLoading, AdminEmptyState, AdminInput, AdminToggle, AdminColorPicker, AdminImageUpload, AdminTabs, AdminToast, AdminBrandSettingsCard } from '../../components/admin-ui';
+import { Settings, Bell, Shield, HardDrive, Server, Award } from 'lucide-react';
 
 export function AdminSettings() {
+  const adminFetch = useAdminFetch();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('general');
   const [toast, setToast] = useState<string | null>(null);
@@ -18,18 +20,18 @@ export function AdminSettings() {
   const [homeSections, setHomeSections] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/admin/settings', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` }
+    adminFetch('/api/admin/settings', {
+      headers: {  }
     })
       .then(res => res.json())
-      .then(data => { setSettings(data.settings || []); setHomeSections(data.homeSections || []); setLoading(false); })
+      .then(data => { const savedBrand = data.settings?.find((setting: any) => setting.key === "brand")?.value || data.brand; if (savedBrand) setBrand(current => ({ ...current, ...savedBrand })); setSettings(data.settings || []); setHomeSections(data.homeSections || []); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
 
   const handleSaveBrand = () => {
-    fetch('/api/admin/settings', {
+    adminFetch('/api/admin/settings', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('clerk_token') || ''}` },
+      headers: { 'Content-Type': 'application/json',  },
       body: JSON.stringify({ key: 'brand', value: brand, type: 'object', category: 'brand', label: 'Configurações de Marca' }),
     })
       .then(() => setToast('Configurações salvas!'))
@@ -90,7 +92,7 @@ export function AdminSettings() {
 
       {activeTab === 'brand' && (
         <div className="space-y-6">
-          <AdminBrandSettingsCard brand={brand} onEdit={() => {}} />
+          <AdminBrandSettingsCard brand={brand} onEdit={() => setActiveTab("general")} />
           
           <AdminCard className="p-6">
             <h3 className="mb-4 font-display text-lg font-bold text-white">Cores</h3>

@@ -1,3 +1,5 @@
+import { authenticate } from './_auth.js';
+import { randomUUID } from 'node:crypto';
 import { json, handleOptions, getQuery, getBody } from "./_utils.js";
 import { db } from "@workspace/db";
 import { 
@@ -19,56 +21,29 @@ import { eq, and, or, desc, asc, sql, count, avg, sum, gte, lte } from "drizzle-
 
 const SUPER_ADMIN_EMAIL = "nativos3d.adm@gmail.com";
 
-export default async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod === "OPTIONS") return handleOptions();
   
-  const path = event.path.replace("/.netlify/functions/admin-api", "");
+  const path = event.path.replace(/^\/(?:\.netlify\/functions\/admin-api|api\/admin)/, "");
   const method = event.httpMethod;
   const query = event.queryStringParameters || {};
-  const body = event.body ? JSON.parse(event.body) : {};
+
   
   try {
-    // Auth check
-    const authHeader = event.headers?.authorization || event.headers?.Authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return json({ error: "Unauthorized" }, 401);
-    }
-    
-    const token = authHeader.replace("Bearer ", "");
-    const clerkResponse = await fetch("https://api.clerk.com/v1/me", {
-      headers: { "Authorization": `Bearer ${process.env.CLERK_SECRET_KEY}` },
-    });
-    
-    if (!clerkResponse.ok) return json({ error: "Invalid token" }, 401);
-    
-    const clerkUser = await clerkResponse.json();
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.clerkId, clerkUser.id)).limit(1);
-    
-    if (!user) return json({ error: "User not found" }, 404);
-    
-    // Get user roles and permissions
-    const userRoles = await db.select({
-      roleId: userRolesTable.roleId,
-      roleName: rolesTable.name,
-      permissionId: rolePermissionsTable.permissionId,
-    })
-    .from(userRolesTable)
-    .innerJoin(rolesTable, eq(userRolesTable.roleId, rolesTable.id))
-    .innerJoin(rolePermissionsTable, eq(rolesTable.id, rolePermissionsTable.roleId))
-    .where(eq(userRolesTable.userId, user.id));
-    
-    const roleNames = [...new Set(userRoles.map(r => r.roleName))];
-    const permissions = [...new Set(userRoles.map(r => r.permissionId))];
-    
-    // Check if SUPER_ADMIN
+    const body = event.body ? JSON.parse(event.body) : {};
+    const auth = await authenticate(event);
+    if (!auth) return json({ error: "Sessão inválida. Entre novamente." }, 401);
+    const { user, roles: roleNames, permissions } = auth;
     const isSuperAdmin = roleNames.includes("SUPER_ADMIN");
-    
-    // Helper to check permission
     const hasPerm = (perm) => isSuperAdmin || permissions.includes(perm);
-    
+    if (path === "/me" && method === "GET") {
+      if (!roleNames.some(r => ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"].includes(r))) return json({ error: "Acesso restrito à administração." }, 403);
+      return json({ user: { id: user.id, name: user.name, email: user.email }, roles: roleNames, permissions });
+    }
     // Log admin action
     const logAction = async (action, resourceType, resourceId, oldValues, newValues) => {
       await db.insert(adminLogsTable).values({
+        id: randomUUID(),
         userId: user.id,
         action,
         resourceType,
@@ -98,7 +73,7 @@ export default async (event) => {
         topCourses,
         recentActivity,
       ] = await Promise.all([
-        db.select({ count: count() }).from(usersTable).where(eq(usersTable.roleId, "student")),
+        db.select({ count: count() }).from(usersTable).where(eq(usersTable.roleId, "STUDENT")),
         db.select({ count: count() }).from(enrollmentsTable).where(eq(enrollmentsTable.status, "active")),
         db.select({ count: count() }).from(academyCoursesTable).where(eq(academyCoursesTable.status, "published")),
         db.select({ count: count() }).from(academyCoursesTable).where(eq(academyCoursesTable.status, "draft")),
@@ -555,7 +530,7 @@ export default async (event) => {
       const { search, status, courseId, page = "1", limit = "20" } = query;
       const offset = (parseInt(page) - 1) * parseInt(limit);
       
-      let conditions = [eq(usersTable.roleId, "student")];
+      let conditions = [eq(usersTable.roleId, "STUDENT")];
       if (search) conditions.push(
         or(
           sql`${usersTable.name} ILIKE ${'%' + search + '%'}`,
@@ -651,6 +626,7 @@ export default async (event) => {
       const { key, value, type, category, label, description } = body;
       
       await db.insert(settingsTable).values({
+        id: randomUUID(),
         key,
         value,
         type,
@@ -1047,6 +1023,7 @@ export default async (event) => {
     
   } catch (error) {
     console.error("Admin API error:", error);
-    return json({ error: "Internal server error", details: error.message }, 500);
+    if (error instanceof SyntaxError) return json({ error: "JSON inválido" }, 400);
+    return json({ error: "Não foi possível acessar o banco ou concluir a operação. Verifique os logs da função e a configuração do banco." }, 500);
   }
 };

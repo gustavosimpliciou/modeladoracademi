@@ -235,7 +235,7 @@ const activities = [
 export async function seedAcademy(): Promise<void> {
   await db.insert(academyCoursesTable).values(course).onConflictDoNothing();
   await db.insert(academyModulesTable).values(modules).onConflictDoNothing();
-  await db.insert(academyLessonsTable).values(lessons).onConflictDoNothing();
+  await db.insert(academyLessonsTable).values(lessons.map(lesson => ({ ...lesson, materials: lesson.materials.map((material, order) => ({ ...material, order })) }))).onConflictDoNothing();
   await db.insert(academyActivityEventsTable).values(activityEvents).onConflictDoNothing();
-  await db.insert(academyActivitiesTable).values(activities).onConflictDoNothing();
+  await db.insert(academyActivitiesTable).values(activities.map(activity => ({ ...activity, description: activity.title, dueDate: null }))).onConflictDoNothing();
 }
