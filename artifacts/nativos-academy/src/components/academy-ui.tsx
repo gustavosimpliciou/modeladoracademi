@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import { useState, type ReactNode, useRef, useEffect } from 'react';
 import { useClerk } from '@clerk/react';
+import { useAcademyAdmin } from '@/hooks/use-academy-admin';
+import { adminNavigation } from '@/lib/admin-navigation';
 
 export function Mark({ compact = false }: { compact?: boolean }) {
   return (
@@ -51,6 +53,7 @@ export function AppShell({ children, userName = 'Gustavo Simplício', userInitia
   const [searchOpen, setSearchOpen] = useState(false);
   const [sidebarMenuOpen, setSidebarMenuOpen] = useState(false);
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
+  const admin = useAcademyAdmin();
 
   return (
     <div className="noise min-h-[100dvh] bg-background text-foreground">
@@ -60,6 +63,7 @@ export function AppShell({ children, userName = 'Gustavo Simplício', userInitia
           <button onClick={() => setMobileOpen(false)} className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground lg:hidden" aria-label="Fechar menu" data-testid="button-close-menu"><X size={18} /></button>
         </div>
         <div className="mt-9 px-2 font-mono-ui text-[9px] uppercase tracking-[.22em] text-muted-foreground">Seu espaço</div>
+        <div className="min-h-0 flex-1 overflow-y-auto pb-4">
         <nav className="mt-3 flex flex-col gap-1" aria-label="Navegação principal">
           {navigation.map(({ href, label, icon: Icon }) => {
             const active = href === '/dashboard' ? location === href || location === '/' : location.startsWith(href);
@@ -72,22 +76,30 @@ export function AppShell({ children, userName = 'Gustavo Simplício', userInitia
             );
           })}
         </nav>
+        {admin.isAdmin && <>
+          <div className="mt-6 px-2 font-mono-ui text-[9px] uppercase tracking-[.22em] text-primary">Administração</div>
+          <nav className="mt-3 flex flex-col gap-1" aria-label="Administração">
+            {adminNavigation.map(({ href, label, icon: Icon }) => <Link key={href} href={href} onClick={() => setMobileOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground"><Icon size={17} /><span>{label}</span></Link>)}
+          </nav>
+        </>}
+        {admin.isError && <div className="mt-4 rounded-lg border border-border p-3 text-xs" role="status"><p>Não foi possível verificar seu acesso administrativo.</p><button onClick={() => void admin.refetch()} className="mt-2 text-primary">Tentar novamente</button><Link href="/admin" className="mt-2 block text-primary" onClick={() => setMobileOpen(false)}>Verificar administração</Link></div>}
         <div className="mt-8 px-2 font-mono-ui text-[9px] uppercase tracking-[.22em] text-muted-foreground">Recursos</div>
         <nav className="mt-3 flex flex-col gap-1">
           <Link href="/cursos" className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground" data-testid="link-nav-biblioteca"><Sparkles size={17} /> Biblioteca</Link>
           <button className="flex items-center gap-3 rounded-lg px-3 py-3 text-left text-sm text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground" data-testid="button-support"><LifeBuoy size={17} /> Suporte</button>
         </nav>
-        <div className="mt-auto border-t border-sidebar-border pt-4">
+        </div>
+        <div className="shrink-0 border-t border-sidebar-border pt-4">
           <div className="relative">
             <button onClick={() => setSidebarMenuOpen(!sidebarMenuOpen)} className="flex w-full items-center gap-3 rounded-xl px-2 py-2" data-testid="button-sidebar-user-menu">
               <span className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-secondary font-mono-ui text-[11px] text-primary" data-testid="avatar-user">{userInitials}</span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-xs font-semibold text-foreground" data-testid="text-sidebar-user">{userName}</span>
-                <span className="mt-0.5 block text-[10px] text-muted-foreground">Aluno</span>
+                <span className="mt-0.5 block text-[10px] text-muted-foreground">{admin.label}</span>
               </span>
               <ChevronDown size={14} className={`text-muted-foreground transition-transform ${sidebarMenuOpen ? 'rotate-180' : ''}`} />
             </button>
-            {sidebarMenuOpen && <UserMenu userName={userName} userInitials={userInitials} onClose={() => setSidebarMenuOpen(false)} />}
+            {sidebarMenuOpen && <UserMenu userName={userName} userInitials={userInitials} roleLabel={admin.label} isAdmin={admin.isAdmin} placement="above" onClose={() => setSidebarMenuOpen(false)} />}
           </div>
           <div className="mt-3 flex items-center gap-2 px-2">
             <span className="font-display text-sm font-bold italic text-primary">N</span>
@@ -114,7 +126,7 @@ export function AppShell({ children, userName = 'Gustavo Simplício', userInitia
                 <span className="flex h-8 w-8 items-center justify-center rounded-full border border-primary/40 bg-secondary font-mono-ui text-[10px] text-primary">{userInitials}</span>
                 <ChevronDown size={14} className={`text-muted-foreground transition-transform ${headerMenuOpen ? 'rotate-180' : ''}`} />
               </button>
-              {headerMenuOpen && <UserMenu userName={userName} userInitials={userInitials} onClose={() => setHeaderMenuOpen(false)} />}
+              {headerMenuOpen && <UserMenu userName={userName} userInitials={userInitials} roleLabel={admin.label} isAdmin={admin.isAdmin} onClose={() => setHeaderMenuOpen(false)} />}
             </div>
           </div>
         </header>
@@ -200,7 +212,7 @@ export function CTAButton({ href, children, secondary = false, onClick, classNam
   return <button onClick={onClick} className={className} data-testid="button-cta">{children}<ArrowRight size={15} /></button>;
 }
 
-function UserMenu({ userName, userInitials, onClose }: { userName: string; userInitials: string; onClose: () => void }) {
+function UserMenu({ userName, userInitials, onClose, roleLabel, isAdmin, placement = 'below' }: { userName: string; userInitials: string; onClose: () => void; roleLabel: string; isAdmin: boolean; placement?: 'above' | 'below' }) {
   const { signOut } = useClerk();
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -216,16 +228,17 @@ function UserMenu({ userName, userInitials, onClose }: { userName: string; userI
 
   const handleSignOut = async () => {
     onClose();
-    await signOut({ redirectUrl: '/sign-in' });
+    await signOut({ redirectUrl: `${import.meta.env.BASE_URL}sign-in` });
   };
 
   return (
-    <div className="fixed inset-0 z-40" onClick={onClose}>
-      <div ref={menuRef} className="absolute right-4 top-full mt-2 w-56 origin-top-right rounded-xl border border-border bg-card p-2 shadow-card animate-rise" onClick={(e) => e.stopPropagation()}>
+    <div className={`absolute right-0 z-50 ${placement === 'above' ? 'bottom-full mb-2' : 'top-full mt-2'}`} onClick={onClose}>
+      <div ref={menuRef} className="w-56 origin-top-right rounded-xl border border-border bg-card p-2 shadow-card animate-rise" onClick={(e) => e.stopPropagation()}>
         <div className="px-3 py-2 border-b border-border">
           <p className="text-sm font-semibold text-foreground">{userName}</p>
-          <p className="text-[11px] text-muted-foreground">Aluno</p>
+          <p className="text-[11px] text-muted-foreground">{roleLabel}</p>
         </div>
+        {isAdmin && <Link href="/admin" onClick={onClose} className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-primary hover:bg-secondary"><LayoutDashboard size={16} /> Painel administrativo</Link>}
         <button onClick={() => { onClose(); }} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground">
           <Cog size={16} /> Configurações
         </button>
