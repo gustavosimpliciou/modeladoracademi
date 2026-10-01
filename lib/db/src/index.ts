@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import * as schema from "./schema";
+import { getConnectionOptions } from "./connection";
 
 const { Pool } = pg;
 
@@ -10,10 +11,8 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-export const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-});
+export const pool = new Pool(getConnectionOptions(process.env.DATABASE_URL));
+pool.on('error', error => console.error('PostgreSQL pool error:', error.message));
 export const db = drizzle(pool, { schema });
 
 export * from "./schema";

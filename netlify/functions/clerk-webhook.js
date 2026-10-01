@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import { db, usersTable, rolesTable, userRolesTable } from '@workspace/db';
 import { json, handleOptions } from './_utils.js';
+import { ensureDatabase } from './_database.js';
 export const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return handleOptions();
   if (event.httpMethod !== 'POST') return json({ error: 'Method not allowed' }, 405);
@@ -15,6 +16,7 @@ export const handler = async (event) => {
   } catch { return json({ error: 'Invalid webhook signature' }, 400); }
   try {
     const { type, data } = webhook;
+    await ensureDatabase();
     if (type === 'user.deleted') {
       await db.update(usersTable).set({ isActive: false, updatedAt: new Date() }).where(eq(usersTable.clerkId, data.id));
     } else if (type === 'user.created' || type === 'user.updated') {

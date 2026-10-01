@@ -1,6 +1,6 @@
 [build]
   base = "."
-  command = "pnpm install --ignore-scripts --frozen-lockfile && pnpm run build:netlify && node scripts/migrate-netlify.mjs"
+  command = "pnpm install --ignore-scripts --frozen-lockfile && pnpm run build:netlify"
   publish = "artifacts/nativos-academy/dist/public"
 
 [build.environment]

@@ -1,6 +1,7 @@
 import { createClerkClient, verifyToken } from "@clerk/backend";
 import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
+import { ensureDatabase } from './_database.js';
 import { db, usersTable, rolesTable, userRolesTable, rolePermissionsTable, permissionsTable } from "@workspace/db";
 
 export async function authenticate(event) {
@@ -19,6 +20,7 @@ export async function authenticate(event) {
   const clerkUser = await createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY }).users.getUser(claims.sub);
   const email = clerkUser.emailAddresses.find(e => e.id === clerkUser.primaryEmailAddressId);
   if (!email || email.verification?.status !== "verified") return null;
+  await ensureDatabase();
   const adminEmail = (process.env.ADMIN_EMAIL || "nativos3d.adm@gmail.com").trim().toLowerCase();
   const isBootstrapAdmin = email.emailAddress.toLowerCase() === adminEmail;
   const roleName = isBootstrapAdmin ? "SUPER_ADMIN" : "STUDENT";
